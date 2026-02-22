@@ -4,22 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Second Spot · Cheapest SMM Panel</title>
+    <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Favicon -->
     <link rel="icon" type="image/jpeg" href="https://i.ibb.co/gbm5NDDN/Picsart-26-01-27-23-09-49-465.jpg">
-    <link rel="stylesheet" href="style.css">
+    <!-- External CSS -->
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <!-- Logo instead of site name -->
     <div class="site-logo">
         <img class="logo-image" src="https://i.ibb.co/XxPr8d3P/b1eec33c726a60554bc78518d5f9b32c.png" alt="Second Spot Logo">
     </div>
 
     <div class="content">
+        <!-- Search Container -->
         <div class="search-container">
             <i class="fas fa-search"></i>
             <input type="text" id="searchInput" placeholder="Search services by name, ID, or category...">
         </div>
 
+        <!-- Category dropdown -->
         <div class="dropdown-container" id="categoryDropdownContainer">
             <label><i class="fas fa-tag"></i> CATEGORY</label>
             <div class="custom-dropdown-trigger" id="categoryTrigger">
@@ -29,6 +36,7 @@
             <div class="custom-dropdown-menu" id="categoryMenu"></div>
         </div>
 
+        <!-- Service dropdown -->
         <div class="dropdown-container" id="serviceDropdownContainer">
             <label><i class="fas fa-cube"></i> SERVICE</label>
             <div class="custom-dropdown-trigger" id="serviceTrigger">
@@ -38,6 +46,7 @@
             <div class="custom-dropdown-menu" id="serviceMenu"></div>
         </div>
 
+        <!-- service detail card -->
         <div id="serviceDetailCard" class="service-detail-card hidden">
             <div class="service-header">
                 <span class="service-name-large" id="detailServiceName">—</span>
@@ -52,6 +61,7 @@
             </div>
         </div>
 
+        <!-- order panel -->
         <div id="orderBox" class="order-panel hidden">
             <div class="quantity-area">
                 <div class="quantity-input-wrapper">
@@ -77,20 +87,52 @@
         </div>
     </div>
 
+    <!-- Disclaimer Section (always visible at bottom) -->
     <div class="disclaimer-section">
         <div class="disclaimer-title">
             <i class="fas fa-exclamation-triangle"></i> IMPORTANT GUIDELINES
         </div>
+
+        <!-- Instagram Followers Disclaimer -->
         <div class="disclaimer-block">
-            <div class="disclaimer-subtitle"><i class="fas fa-users"></i> Instagram Followers</div>
-            <div class="disclaimer-note">Account must be <strong>public</strong>. Disable <strong>"Flagged for Review"</strong>.</div>
+            <div class="disclaimer-subtitle">
+                <i class="fas fa-users"></i> Before ordering Instagram Followers
+            </div>
+            <div class="disclaimer-note">
+                Make sure your Instagram account is <strong>public</strong> and the <strong>"Flagged for Review"</strong> option is turned off.
+            </div>
+            
+            <div class="steps">
+                <p><span class="step-number">❗️</span> HOW TO TURN OFF "FLAGGED FOR REVIEW"</p>
+                <p><span class="step-number">1.</span> Go to Instagram Settings</p>
+                <p><span class="step-number">2.</span> Select Invite and Follow Friends</p>
+                <p><span class="step-number">3.</span> Disable Flagged for Review</p>
+            </div>
+            
             <ul class="disclaimer-list">
-                <li>No refund after order placement</li>
-                <li>No refill if username changes or account goes private</li>
+                <li><i class="fas fa-times-circle warning-icon"></i> No refund after the order is placed</li>
+                <li><i class="fas fa-times-circle warning-icon"></i> No refill if the profile is made private or the username is changed</li>
             </ul>
+        </div>
+
+        <!-- Instagram Reel/Post Views/Likes Disclaimer -->
+        <div class="disclaimer-block">
+            <div class="disclaimer-subtitle">
+                <i class="fas fa-video"></i> Before ordering Instagram Reel/Post views or likes
+            </div>
+            <div class="disclaimer-note">
+                Make sure <strong>all accounts in the collab are public</strong>. Your account must also be public.
+            </div>
+            <p style="margin: 0.8rem 0; color: #dddddd;">
+                If any account is private, the order cannot be completed and <strong>no refund will be provided</strong>.
+            </p>
+            <div class="disclaimer-note" style="border-left-color: #9ed9b5;">
+                <i class="fas fa-info-circle"></i> Please remove private collab accounts before ordering these services.
+            </div>
         </div>
     </div>
 
+    <!-- External JavaScript -->
     <script src="script.js"></script>
 </body>
 </html>
