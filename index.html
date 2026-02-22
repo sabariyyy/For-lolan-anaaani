@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Second Spot · filtered categories</title>
+    <title>Second Spot</title>
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Modern clean fonts (Inter / Outfit) -->
@@ -789,7 +789,7 @@
                 // Twitter variations
                 'twitter', '𝐓𝐰𝐢𝐭𝐭𝐞𝐫', 'x (twitter)', 'x twitter', 'x.com', 'tweet',
                 // TikTok variations
-                'tiktok', '𝐓𝐢𝐤𝐨𝐤', 'tik tok', 'tick tock', 'tiktok',
+                'tiktok', '𝐓𝐢𝐤𝐨𝐤', 'tik tok', 'tick tock', 'tiktok', '𝐓𝐢𝐤𝐓𝐨𝐤',
                 // Facebook variations
                 'facebook', '𝐅𝐚𝐜𝐞𝐛𝐨𝐨𝐤', 'fb', 'meta', 'face book', 'fb.'
             ];
@@ -1049,4 +1049,162 @@
                     const originalRate = parseFloat(service.rate) || 0;
                     const finalRate = (originalRate * 1.45).toFixed(2);
 
-                    const item
+                    const item = document.createElement('div');
+                    item.className = 'dropdown-item';
+
+                    const textWrapper = document.createElement('span');
+                    textWrapper.style.display = 'inline';
+                    textWrapper.style.whiteSpace = 'normal';
+
+                    const idSpan = document.createElement('span');
+                    idSpan.className = 'service-inline-id';
+                    idSpan.textContent = `#${service.service} `;
+
+                    const nameSpan = document.createElement('span');
+                    nameSpan.className = 'service-name-custom';
+                    nameSpan.style.display = 'inline';
+                    nameSpan.textContent = service.name || 'Unnamed';
+
+                    const priceSpan = document.createElement('span');
+                    priceSpan.className = 'service-inline-price';
+                    priceSpan.textContent = ` ₹ ${finalRate}`;
+
+                    // Add category indicator for search results
+                    const categorySpan = document.createElement('span');
+                    categorySpan.style.color = '#888888';
+                    categorySpan.style.fontSize = '0.8rem';
+                    categorySpan.style.marginLeft = '8px';
+                    categorySpan.textContent = `[${service.category || 'Uncategorized'}]`;
+
+                    textWrapper.appendChild(idSpan);
+                    textWrapper.appendChild(nameSpan);
+                    textWrapper.appendChild(priceSpan);
+                    textWrapper.appendChild(categorySpan);
+
+                    item.appendChild(textWrapper);
+                    item.dataset.service = JSON.stringify(service);
+
+                    item.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        selectedServiceData = service;
+                        selectedServiceText.innerText = `#${service.service} ${service.name?.substring(0,20)}...`;
+                        hideAllMenus();
+                        displayServiceDetails(service);
+                    });
+
+                    serviceMenu.appendChild(item);
+                });
+            }
+
+            // Debounced search
+            let searchTimeout;
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    performSearch(this.value);
+                }, 300);
+            });
+
+            function displayServiceDetails(service) {
+                detailServiceName.textContent = service.name || 'Service';
+                detailServiceId.textContent = `ID ${service.service}`;
+                descriptionText.textContent = service.description || 'No description provided.';
+                minOrderSpan.textContent = service.min || '0';
+                maxOrderSpan.textContent = service.max || '0';
+
+                detailCard.classList.remove('hidden');
+                orderBox.classList.remove('hidden');
+                quantityInput.value = '';
+                totalPriceDiv.innerHTML = '₹ 0.00<small>total</small>';
+                linkInput.value = '';
+            }
+
+            quantityInput.addEventListener('input', function() {
+                if (!selectedServiceData) {
+                    totalPriceDiv.innerHTML = '₹ 0.00<small>total</small>';
+                    return;
+                }
+                const qty = parseInt(this.value, 10);
+                if (!qty || qty < 0) {
+                    totalPriceDiv.innerHTML = '₹ 0.00<small>total</small>';
+                    return;
+                }
+                const originalRate = parseFloat(selectedServiceData.rate) || 0;
+                const finalRate = originalRate * 1.45;
+                const total = (finalRate / 1000) * qty;
+                totalPriceDiv.innerHTML = `₹ ${total.toFixed(2)}<small>total</small>`;
+            });
+
+            addLinkBtn.addEventListener('click', function() {
+                if (linkInput.value.trim() !== '') {
+                    alert('✅ Link added: ' + linkInput.value);
+                } else {
+                    alert('⚠️ Please paste a link first.');
+                }
+            });
+
+            purchaseBtn.addEventListener('click', function() {
+                if (!selectedServiceData) {
+                    alert('Please select a service first.');
+                    return;
+                }
+                const qty = parseInt(quantityInput.value, 10);
+                if (!qty || qty <= 0) {
+                    alert('Enter a valid quantity.');
+                    return;
+                }
+                const link = linkInput.value.trim();
+                if (!link) {
+                    alert('Please enter a profile or post link.');
+                    return;
+                }
+
+                const serviceId = selectedServiceData.service;
+                const serviceName = selectedServiceData.name || 'Unnamed';
+                const price = (parseFloat(selectedServiceData.rate) * 1.45 / 1000 * qty).toFixed(2);
+                const message = `New order:%0A🔹 Service ID: ${serviceId}%0A🔹 Service: ${serviceName}%0A🔹 Quantity: ${qty}%0A🔹 Link: ${link}%0A🔹 Price: ₹ ${price}`;
+                
+                window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, '_blank');
+            });
+
+            // Fetch services from Vercel API and filter out unwanted categories
+            async function fetchServices() {
+                try {
+                    const response = await fetch(API_URL);
+                    const services = await response.json();
+                    if (!Array.isArray(services)) {
+                        console.warn("API did not return an array.");
+                        return;
+                    }
+
+                    // First, filter out services that belong to excluded categories
+                    const filteredServices = services.filter(service => !isCategoryExcluded(service.category));
+                    
+                    // Store filtered services for search
+                    allServices = filteredServices;
+
+                    // Group the filtered services by category
+                    filteredServices.forEach(service => {
+                        const cat = service.category || "Uncategorized";
+                        if (!groupedServices[cat]) groupedServices[cat] = [];
+                        groupedServices[cat].push(service);
+                    });
+
+                    // Get unique categories from filtered services
+                    categoriesList = Object.keys(groupedServices).sort();
+                    
+                    // Populate the category menu
+                    populateCategoryMenu();
+                    
+                    console.log(`Filtered out ${services.length - filteredServices.length} services from excluded categories`);
+                } catch (err) {
+                    console.error("Fetch from Vercel API failed.", err);
+                }
+            }
+
+            fetchServices();
+            serviceTrigger.classList.add('disabled');
+        })();
+    </script>
+</body>
+</html>
