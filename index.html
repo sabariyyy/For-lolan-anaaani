@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Second Spot · two-line names</title>
+    <title>Second Spot · backend connected</title>
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Modern clean fonts (Inter / Outfit) -->
@@ -525,7 +525,7 @@
             </div>
         </div>
 
-        <!-- order panel with link + quality + purchase button -->
+        <!-- order panel -->
         <div id="orderBox" class="order-panel hidden">
             <div class="quantity-area">
                 <div class="quantity-input-wrapper">
@@ -553,9 +553,8 @@
 
     <script>
         (function() {
-            const API_KEY = "8ff2e98cd22e9906a5f7d597f814a8475bdab586";
-            const API_URL = "https://themainsmmprovider.com/api/v2";
-            const WHATSAPP_NUMBER = "91963605648";  // without '+'
+            // Use the PHP proxy endpoint – adjust path if needed (here assuming same directory)
+            const PROXY_URL = "proxy.php";  // change to your actual PHP file name/path
 
             let groupedServices = {};
             let selectedServiceData = null;
@@ -582,6 +581,7 @@
             const linkInput = document.getElementById('linkInput');
             const addLinkBtn = document.getElementById('addLinkBtn');
             const purchaseBtn = document.getElementById('purchaseBtn');
+            const WHATSAPP_NUMBER = "91963605648";
 
             function hideAllMenus() {
                 categoryMenu.classList.remove('show');
@@ -610,7 +610,7 @@
 
             document.addEventListener('click', () => hideAllMenus());
 
-            // Populate categories: Instagram first, then alphabetically
+            // Populate categories with Instagram first
             function populateCategoryMenu() {
                 categoryMenu.innerHTML = '';
                 if (categoriesList.length === 0) {
@@ -618,7 +618,6 @@
                     return;
                 }
 
-                // Instagram first sorting
                 const sorted = [...categoriesList].sort((a, b) => {
                     const aLower = a.toLowerCase();
                     const bLower = b.toLowerCase();
@@ -631,7 +630,6 @@
                 sorted.forEach(cat => {
                     const item = document.createElement('div');
                     item.className = 'dropdown-item';
-                    // wrap category name in a span to apply 2-line clamp
                     item.innerHTML = `<i class="fas fa-folder" style="color:#aaa;"></i> <span>${cat}</span>`;
                     item.addEventListener('click', (e) => {
                         e.stopPropagation();
@@ -685,7 +683,6 @@
                     item.addEventListener('click', (e) => {
                         e.stopPropagation();
                         selectedServiceData = service;
-                        // show first 20 chars in trigger but full name stored
                         selectedServiceText.innerText = `#${service.service} ${service.name?.substring(0,20)}...`;
                         hideAllMenus();
                         displayServiceDetails(service);
@@ -757,17 +754,13 @@
                 window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, '_blank');
             });
 
-            // REAL API CALL – no dummy data
+            // Fetch services via PHP proxy
             async function fetchServices() {
                 try {
-                    const response = await fetch(API_URL, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                        body: `key=${API_KEY}&action=services`
-                    });
+                    const response = await fetch(PROXY_URL);
                     const services = await response.json();
                     if (!Array.isArray(services)) {
-                        console.warn("API did not return array.");
+                        console.warn("Proxy did not return an array.");
                         return;
                     }
 
@@ -780,7 +773,7 @@
                     categoriesList = Object.keys(groupedServices).sort();
                     populateCategoryMenu();
                 } catch (err) {
-                    console.error("API fetch failed. No dummy data.", err);
+                    console.error("Fetch from proxy failed.", err);
                 }
             }
 
@@ -789,4 +782,4 @@
         })();
     </script>
 </body>
-</html>
+    </html>
