@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Second Spot · uniform text size</title>
+    <title>Second Spot · inline id & price</title>
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Modern clean fonts (Inter / Outfit) -->
@@ -180,37 +180,22 @@
             color: #ffffff;
         }
 
-        /* service ID (reddish) — same font size as name */
-        .service-id-custom {
-            color: #ff8a9f;
+        /* INLINE STYLE: id and price are part of the same text flow, no background boxes */
+        .service-inline-id {
+            color: #ff8a9f;          /* reddish */
             font-weight: 500;
-            background: #221c1e;
-            padding: 3px 10px;
-            border-radius: 30px;
-            font-size: 0.9rem;          /* MATCHES DROPDOWN TEXT SIZE */
-            border: 1px solid #332a2c;
+            margin-right: 4px;
             white-space: nowrap;
-            flex-shrink: 0;
-            line-height: 1.3;
         }
 
-        /* service price (greenish) — same font size as name */
-        .service-price-custom {
-            color: #9ed9b5;
+        .service-inline-price {
+            color: #9ed9b5;           /* greenish */
             font-weight: 500;
-            background: #1c231f;
-            padding: 3px 10px;
-            border-radius: 30px;
-            margin-left: auto;
-            font-size: 0.9rem;          /* MATCHES DROPDOWN TEXT SIZE */
-            border: 1px solid #2a352e;
+            margin-left: 8px;
             white-space: nowrap;
-            flex-shrink: 0;
-            line-height: 1.3;
         }
 
         .service-name-custom {
-            flex: 1;
             font-weight: 400;
             color: #f0f0f0;
             overflow: hidden;
@@ -220,11 +205,11 @@
             line-clamp: 2;
             word-break: break-word;
             max-width: 100%;
-            font-size: 0.9rem;          /* explicit to match */
+            font-size: 0.9rem;
         }
 
-        /* category name inside dropdown also two lines */
-        .dropdown-item span:not(.service-id-custom):not(.service-price-custom) {
+        /* category name two lines */
+        .dropdown-item span:not(.service-name-custom) {
             overflow: hidden;
             display: -webkit-box;
             -webkit-line-clamp: 2;
@@ -287,6 +272,7 @@
             flex-shrink: 0;
         }
 
+        /* description with line-by-line formatting (preserves line breaks) */
         .service-description {
             font-size: 0.95rem;
             line-height: 1.6;
@@ -297,6 +283,8 @@
             border-radius: 24px;
             border-left: 2px solid #444444;
             font-weight: 300;
+            white-space: pre-line;      /* displays line breaks from API */
+            word-break: break-word;
         }
 
         .minmax-row {
@@ -521,6 +509,7 @@
                 <span class="service-name-large" id="detailServiceName">—</span>
                 <span class="service-id-large" id="detailServiceId">ID —</span>
             </div>
+            <!-- description with line-by-line support (white-space: pre-line) -->
             <div class="service-description" id="detailDescription">
                 <span id="descriptionText"></span>
             </div>
@@ -558,7 +547,7 @@
 
     <script>
         (function() {
-            // ✅ Vercel API endpoint – adjust if needed
+            // ✅ Vercel API endpoint
             const API_URL = "/api/services";
 
             let groupedServices = {};
@@ -586,7 +575,7 @@
             const linkInput = document.getElementById('linkInput');
             const addLinkBtn = document.getElementById('addLinkBtn');
             const purchaseBtn = document.getElementById('purchaseBtn');
-            const WHATSAPP_NUMBER = "919633605648";
+            const WHATSAPP_NUMBER = "91963605648";
 
             function hideAllMenus() {
                 categoryMenu.classList.remove('show');
@@ -667,25 +656,33 @@
                     const item = document.createElement('div');
                     item.className = 'dropdown-item';
 
-                    // ID span (reddish) — font size matches rest (0.9rem)
-                    const idSpan = document.createElement('span');
-                    idSpan.className = 'service-id-custom';
-                    idSpan.textContent = `#${service.service}`;
+                    // Create a wrapper for the text content to allow natural flow
+                    const textWrapper = document.createElement('span');
+                    textWrapper.style.display = 'inline';
+                    textWrapper.style.whiteSpace = 'normal';
 
-                    // Name span (two lines allowed)
+                    // ID part (reddish, inline)
+                    const idSpan = document.createElement('span');
+                    idSpan.className = 'service-inline-id';
+                    idSpan.textContent = `#${service.service} `;
+
+                                    // Name part (normal color)
                     const nameSpan = document.createElement('span');
                     nameSpan.className = 'service-name-custom';
+                    nameSpan.style.display = 'inline';  // override flex display
                     nameSpan.textContent = service.name || 'Unnamed';
 
-                    // Price span (greenish) — same font size
+                    // Price part (greenish, inline)
                     const priceSpan = document.createElement('span');
-                    priceSpan.className = 'service-price-custom';
-                    priceSpan.textContent = `₹ ${finalRate}`;
+                    priceSpan.className = 'service-inline-price';
+                    priceSpan.textContent = ` ₹ ${finalRate}`;
 
-                    item.appendChild(idSpan);
-                    item.appendChild(nameSpan);
-                    item.appendChild(priceSpan);
+                    // Assemble in order: ID, Name, Price
+                    textWrapper.appendChild(idSpan);
+                    textWrapper.appendChild(nameSpan);
+                    textWrapper.appendChild(priceSpan);
 
+                    item.appendChild(textWrapper);
                     item.dataset.service = JSON.stringify(service);
 
                     item.addEventListener('click', (e) => {
@@ -703,6 +700,7 @@
             function displayServiceDetails(service) {
                 detailServiceName.textContent = service.name || 'Service';
                 detailServiceId.textContent = `ID ${service.service}`;
+                // description will automatically respect line breaks due to white-space: pre-line
                 descriptionText.textContent = service.description || 'No description provided.';
                 minOrderSpan.textContent = service.min || '0';
                 maxOrderSpan.textContent = service.max || '0';
@@ -757,7 +755,7 @@
                 const serviceId = selectedServiceData.service;
                 const serviceName = selectedServiceData.name || 'Unnamed';
                 const price = (parseFloat(selectedServiceData.rate) * 1.45 / 1000 * qty).toFixed(2);
-                const message = `New order:%0A🔹 Service ID: ${serviceId}%0A🔹 Quantity: ${qty}%0A🔹 Link: ${link}%0A🔹 Price: ₹ ${price}`;
+                const message = `New order:%0A🔹 Service ID: ${serviceId}%0A🔹 Service: ${serviceName}%0A🔹 Quantity: ${qty}%0A🔹 Link: ${link}%0A🔹 Price: ₹ ${price}`;
                 
                 window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, '_blank');
             });
@@ -790,4 +788,4 @@
         })();
     </script>
 </body>
-    </html>
+</html>
