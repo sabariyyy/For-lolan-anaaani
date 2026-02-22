@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Second Spot · with disclaimers</title>
+    <title>Second Spot · filtered categories</title>
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Modern clean fonts (Inter / Outfit) -->
@@ -781,6 +781,14 @@
             // Store all services for searching
             let allServices = [];
 
+            // Categories to filter out (case-insensitive, includes special chars)
+            const excludedCategoryKeywords = [
+                'telegram', '𝐓𝐞𝐥𝐞𝐠𝐫𝐚𝐦', 'teligram',
+                'twitter', '𝐓𝐰𝐢𝐭𝐭𝐞𝐫', 'x (twitter)',
+                'tiktok', '𝐓𝐢𝐤𝐨𝐤', 'tik tok',
+                'facebook', '𝐅𝐚𝐜𝐞𝐛𝐨𝐨𝐤', 'fb', 'meta'
+            ];
+
             function hideAllMenus() {
                 categoryMenu.classList.remove('show');
                 serviceMenu.classList.remove('show');
@@ -808,10 +816,24 @@
                 }
             });
 
-            // Build category menu with Instagram variants on top
+            // Check if category should be excluded
+            function isCategoryExcluded(categoryName) {
+                if (!categoryName) return false;
+                const lowerName = categoryName.toLowerCase();
+                return excludedCategoryKeywords.some(keyword => 
+                    lowerName.includes(keyword.toLowerCase()) || 
+                    categoryName.includes(keyword)
+                );
+            }
+
+            // Build category menu with Instagram variants on top, excluding specified categories
             function populateCategoryMenu() {
                 categoryMenu.innerHTML = '';
-                if (categoriesList.length === 0) {
+                
+                // Filter out excluded categories
+                const filteredCategories = categoriesList.filter(cat => !isCategoryExcluded(cat));
+                
+                if (filteredCategories.length === 0) {
                     categoryMenu.innerHTML = '<div class="dropdown-item">no categories available</div>';
                     return;
                 }
@@ -819,7 +841,7 @@
                 // Comprehensive Instagram detection (including special characters)
                 const instagramVariants = ['instagram', '𝐈𝐧𝐬𝐭𝐚𝐠𝐫𝐚𝐦', 'insta', '📷', '📸'];
                 
-                const sorted = [...categoriesList].sort((a, b) => {
+                const sorted = [...filteredCategories].sort((a, b) => {
                     const aLower = a.toLowerCase();
                     const bLower = b.toLowerCase();
                     
@@ -973,8 +995,11 @@
 
                 searchTerm = searchTerm.toLowerCase().trim();
                 
-                // Filter all services
+                // Filter all services, but also filter out services from excluded categories
                 const filteredServices = allServices.filter(service => {
+                    // Skip if category is excluded
+                    if (isCategoryExcluded(service.category)) return false;
+                    
                     const nameMatch = service.name?.toLowerCase().includes(searchTerm) || false;
                     const idMatch = service.service?.toString().includes(searchTerm) || false;
                     const categoryMatch = service.category?.toLowerCase().includes(searchTerm) || false;
