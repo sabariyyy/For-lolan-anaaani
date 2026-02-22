@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Second Spot · custom priority order</title>
+    <title>Second Spot · with disclaimers</title>
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Modern clean fonts (Inter / Outfit) -->
@@ -236,6 +236,7 @@
         }
 
         .service-name-custom {
+            flex: 1;
             font-weight: 400;
             color: #f0f0f0;
             overflow: hidden;
@@ -496,6 +497,113 @@
             border-color: #5a8080;
         }
 
+        /* Disclaimer section styles */
+        .disclaimer-section {
+            margin-top: 2.5rem;
+            padding: 1.5rem;
+            background: #0a0a0a;
+            border: 1px solid #2a2a2a;
+            border-radius: 28px;
+            width: 100%;
+            max-width: 800px;
+            color: #cccccc;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .disclaimer-title {
+            color: #ff8a9f;
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .disclaimer-title i {
+            color: #ff8a9f;
+        }
+
+        .disclaimer-block {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #222222;
+        }
+
+        .disclaimer-block:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .disclaimer-subtitle {
+            color: #9ed9b5;
+            font-weight: 500;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .disclaimer-subtitle i {
+            color: #9ed9b5;
+            font-size: 0.9rem;
+        }
+
+        .disclaimer-list {
+            list-style: none;
+            padding-left: 1.5rem;
+        }
+
+        .disclaimer-list li {
+            margin-bottom: 0.5rem;
+            position: relative;
+            color: #bbbbbb;
+        }
+
+        .disclaimer-list li:before {
+            content: "•";
+            color: #777777;
+            font-weight: bold;
+            position: absolute;
+            left: -1rem;
+        }
+
+        .disclaimer-note {
+            background: #111111;
+            padding: 0.8rem 1rem;
+            border-radius: 16px;
+            margin: 0.8rem 0;
+            border-left: 3px solid #ff8a9f;
+            font-size: 0.85rem;
+        }
+
+        .steps {
+            background: #111111;
+            padding: 1rem 1.5rem;
+            border-radius: 20px;
+            margin: 1rem 0;
+        }
+
+        .steps p {
+            margin: 0.5rem 0;
+            color: #dddddd;
+        }
+
+        .steps .step-number {
+            color: #9ed9b5;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+        .warning-icon {
+            color: #ff8a9f;
+            margin-right: 6px;
+        }
+
         .hidden {
             display: none;
         }
@@ -590,10 +698,58 @@
         </div>
     </div>
 
+    <!-- Disclaimer Section (always visible at bottom) -->
+    <div class="disclaimer-section">
+        <div class="disclaimer-title">
+            <i class="fas fa-exclamation-triangle"></i> IMPORTANT GUIDELINES
+        </div>
+
+        <!-- Instagram Followers Disclaimer -->
+        <div class="disclaimer-block">
+            <div class="disclaimer-subtitle">
+                <i class="fas fa-users"></i> Before ordering Instagram Followers
+            </div>
+            <div class="disclaimer-note">
+                Make sure your Instagram account is <strong>public</strong> and the <strong>"Flagged for Review"</strong> option is turned off.
+            </div>
+            
+            <div class="steps">
+                <p><span class="step-number">❗️</span> HOW TO TURN OFF "FLAGGED FOR REVIEW"</p>
+                <p><span class="step-number">1.</span> Go to Instagram Settings</p>
+                <p><span class="step-number">2.</span> Select Invite and Follow Friends</p>
+                <p><span class="step-number">3.</span> Disable Flagged for Review</p>
+            </div>
+            
+            <ul class="disclaimer-list">
+                <li><i class="fas fa-times-circle warning-icon"></i> No refund after the order is placed</li>
+                <li><i class="fas fa-times-circle warning-icon"></i> No refill if the profile is made private or the username is changed</li>
+            </ul>
+        </div>
+
+        <!-- Instagram Reel/Post Views/Likes Disclaimer -->
+        <div class="disclaimer-block">
+            <div class="disclaimer-subtitle">
+                <i class="fas fa-video"></i> Before ordering Instagram Reel/Post views or likes
+            </div>
+            <div class="disclaimer-note">
+                Make sure <strong>all accounts in the collab are public</strong>. Your account must also be public.
+            </div>
+            <p style="margin: 0.8rem 0; color: #dddddd;">
+                If any account is private, the order cannot be completed and <strong>no refund will be provided</strong>.
+            </p>
+            <div class="disclaimer-note" style="border-left-color: #9ed9b5;">
+                <i class="fas fa-info-circle"></i> Please remove private collab accounts before ordering these services.
+            </div>
+        </div>
+    </div>
+
     <script>
         (function() {
             // Vercel API endpoint
             const API_URL = "/api/services";
+
+            // WhatsApp number
+            const WHATSAPP_NUMBER = "919633605648";
 
             let groupedServices = {};
             let selectedServiceData = null;
@@ -622,8 +778,6 @@
             const purchaseBtn = document.getElementById('purchaseBtn');
             const searchInput = document.getElementById('searchInput');
             
-            const WHATSAPP_NUMBER = "91963605648";
-
             // Store all services for searching
             let allServices = [];
 
