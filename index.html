@@ -751,6 +751,7 @@
             // WhatsApp number
             const WHATSAPP_NUMBER = "919633605648";
 
+            // Store all services after filtering
             let groupedServices = {};
             let selectedServiceData = null;
             let categoriesList = [];
@@ -778,15 +779,19 @@
             const purchaseBtn = document.getElementById('purchaseBtn');
             const searchInput = document.getElementById('searchInput');
             
-            // Store all services for searching
+            // Store all services for searching (after filtering)
             let allServices = [];
 
-            // Categories to filter out (case-insensitive, includes special chars)
+            // Categories to filter out - comprehensive list including all variations
             const excludedCategoryKeywords = [
-                'telegram', '𝐓𝐞𝐥𝐞𝐠𝐫𝐚𝐦', 'teligram',
-                'twitter', '𝐓𝐰𝐢𝐭𝐭𝐞𝐫', 'x (twitter)',
-                'tiktok', '𝐓𝐢𝐤𝐨𝐤', 'tik tok',
-                'facebook', '𝐅𝐚𝐜𝐞𝐛𝐨𝐨𝐤', 'fb', 'meta'
+                // Telegram variations
+                'telegram', '𝐓𝐞𝐥𝐞𝐠𝐫𝐚𝐦', 'teligram', 'tele gram', 'telegram',
+                // Twitter variations
+                'twitter', '𝐓𝐰𝐢𝐭𝐭𝐞𝐫', 'x (twitter)', 'x twitter', 'x.com', 'tweet',
+                // TikTok variations
+                'tiktok', '𝐓𝐢𝐤𝐨𝐤', 'tik tok', 'tick tock', 'tiktok',
+                // Facebook variations
+                'facebook', '𝐅𝐚𝐜𝐞𝐛𝐨𝐨𝐤', 'fb', 'meta', 'face book', 'fb.'
             ];
 
             function hideAllMenus() {
@@ -816,14 +821,19 @@
                 }
             });
 
-            // Check if category should be excluded
+            // Check if category should be excluded - more aggressive filtering
             function isCategoryExcluded(categoryName) {
                 if (!categoryName) return false;
                 const lowerName = categoryName.toLowerCase();
-                return excludedCategoryKeywords.some(keyword => 
-                    lowerName.includes(keyword.toLowerCase()) || 
-                    categoryName.includes(keyword)
-                );
+                
+                // Direct check against keywords
+                return excludedCategoryKeywords.some(keyword => {
+                    const lowerKeyword = keyword.toLowerCase();
+                    // Check if the category name contains the keyword (case insensitive)
+                    return lowerName.includes(lowerKeyword) || 
+                           // Also check for exact matches with special characters
+                           categoryName.includes(keyword);
+                });
             }
 
             // Build category menu with Instagram variants on top, excluding specified categories
@@ -1039,152 +1049,4 @@
                     const originalRate = parseFloat(service.rate) || 0;
                     const finalRate = (originalRate * 1.45).toFixed(2);
 
-                    const item = document.createElement('div');
-                    item.className = 'dropdown-item';
-
-                    const textWrapper = document.createElement('span');
-                    textWrapper.style.display = 'inline';
-                    textWrapper.style.whiteSpace = 'normal';
-
-                    const idSpan = document.createElement('span');
-                    idSpan.className = 'service-inline-id';
-                    idSpan.textContent = `#${service.service} `;
-
-                    const nameSpan = document.createElement('span');
-                    nameSpan.className = 'service-name-custom';
-                    nameSpan.style.display = 'inline';
-                    nameSpan.textContent = service.name || 'Unnamed';
-
-                    const priceSpan = document.createElement('span');
-                    priceSpan.className = 'service-inline-price';
-                    priceSpan.textContent = ` ₹ ${finalRate}`;
-
-                    // Add category indicator for search results
-                    const categorySpan = document.createElement('span');
-                    categorySpan.style.color = '#888888';
-                    categorySpan.style.fontSize = '0.8rem';
-                    categorySpan.style.marginLeft = '8px';
-                    categorySpan.textContent = `[${service.category || 'Uncategorized'}]`;
-
-                    textWrapper.appendChild(idSpan);
-                    textWrapper.appendChild(nameSpan);
-                    textWrapper.appendChild(priceSpan);
-                    textWrapper.appendChild(categorySpan);
-
-                    item.appendChild(textWrapper);
-                    item.dataset.service = JSON.stringify(service);
-
-                    item.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        selectedServiceData = service;
-                        selectedServiceText.innerText = `#${service.service} ${service.name?.substring(0,20)}...`;
-                        hideAllMenus();
-                        displayServiceDetails(service);
-                    });
-
-                    serviceMenu.appendChild(item);
-                });
-            }
-
-            // Debounced search
-            let searchTimeout;
-            searchInput.addEventListener('input', function() {
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(() => {
-                    performSearch(this.value);
-                }, 300);
-            });
-
-            function displayServiceDetails(service) {
-                detailServiceName.textContent = service.name || 'Service';
-                detailServiceId.textContent = `ID ${service.service}`;
-                descriptionText.textContent = service.description || 'No description provided.';
-                minOrderSpan.textContent = service.min || '0';
-                maxOrderSpan.textContent = service.max || '0';
-
-                detailCard.classList.remove('hidden');
-                orderBox.classList.remove('hidden');
-                quantityInput.value = '';
-                totalPriceDiv.innerHTML = '₹ 0.00<small>total</small>';
-                linkInput.value = '';
-            }
-
-            quantityInput.addEventListener('input', function() {
-                if (!selectedServiceData) {
-                    totalPriceDiv.innerHTML = '₹ 0.00<small>total</small>';
-                    return;
-                }
-                const qty = parseInt(this.value, 10);
-                if (!qty || qty < 0) {
-                    totalPriceDiv.innerHTML = '₹ 0.00<small>total</small>';
-                    return;
-                }
-                const originalRate = parseFloat(selectedServiceData.rate) || 0;
-                const finalRate = originalRate * 1.45;
-                const total = (finalRate / 1000) * qty;
-                totalPriceDiv.innerHTML = `₹ ${total.toFixed(2)}<small>total</small>`;
-            });
-
-            addLinkBtn.addEventListener('click', function() {
-                if (linkInput.value.trim() !== '') {
-                    alert('✅ Link added: ' + linkInput.value);
-                } else {
-                    alert('⚠️ Please paste a link first.');
-                }
-            });
-
-            purchaseBtn.addEventListener('click', function() {
-                if (!selectedServiceData) {
-                    alert('Please select a service first.');
-                    return;
-                }
-                const qty = parseInt(quantityInput.value, 10);
-                if (!qty || qty <= 0) {
-                    alert('Enter a valid quantity.');
-                    return;
-                }
-                const link = linkInput.value.trim();
-                if (!link) {
-                    alert('Please enter a profile or post link.');
-                    return;
-                }
-
-                const serviceId = selectedServiceData.service;
-                const serviceName = selectedServiceData.name || 'Unnamed';
-                const price = (parseFloat(selectedServiceData.rate) * 1.45 / 1000 * qty).toFixed(2);
-                const message = `New order:%0A🔹 Service ID: ${serviceId}%0A🔹 Service: ${serviceName}%0A🔹 Quantity: ${qty}%0A🔹 Link: ${link}%0A🔹 Price: ₹ ${price}`;
-                
-                window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, '_blank');
-            });
-
-            // Fetch services from Vercel API
-            async function fetchServices() {
-                try {
-                    const response = await fetch(API_URL);
-                    const services = await response.json();
-                    if (!Array.isArray(services)) {
-                        console.warn("API did not return an array.");
-                        return;
-                    }
-
-                    allServices = services; // Store for search
-
-                    services.forEach(service => {
-                        const cat = service.category || "Uncategorized";
-                        if (!groupedServices[cat]) groupedServices[cat] = [];
-                        groupedServices[cat].push(service);
-                    });
-
-                    categoriesList = Object.keys(groupedServices).sort();
-                    populateCategoryMenu();
-                } catch (err) {
-                    console.error("Fetch from Vercel API failed.", err);
-                }
-            }
-
-            fetchServices();
-            serviceTrigger.classList.add('disabled');
-        })();
-    </script>
-</body>
-</html>
+                    const item
