@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Second Spot · backend connected</title>
+    <title>Second Spot · vercel api</title>
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Modern clean fonts (Inter / Outfit) -->
@@ -550,193 +550,249 @@
             </div>
         </div>
     </div>
-<script>
-(function() {
 
-    // ✅ Vercel API route (NOT PHP)
-    const PROXY_URL = "/api/services";
+    <script>
+        (function() {
+            // ✅ Vercel API endpoint – change if your deployment uses a different path
+            const API_URL = "/api/services";
 
-    let groupedServices = {};
-    let selectedServiceData = null;
-    let categoriesList = [];
+            let groupedServices = {};
+            let selectedServiceData = null;
+            let categoriesList = [];
 
-    const categoryTrigger = document.getElementById('categoryTrigger');
-    const categoryMenu = document.getElementById('categoryMenu');
-    const selectedCategoryText = document.getElementById('selectedCategoryText');
-    const serviceTrigger = document.getElementById('serviceTrigger');
-    const serviceMenu = document.getElementById('serviceMenu');
-    const selectedServiceText = document.getElementById('selectedServiceText');
+            // DOM elements
+            const categoryTrigger = document.getElementById('categoryTrigger');
+            const categoryMenu = document.getElementById('categoryMenu');
+            const selectedCategoryText = document.getElementById('selectedCategoryText');
+            const serviceTrigger = document.getElementById('serviceTrigger');
+            const serviceMenu = document.getElementById('serviceMenu');
+            const selectedServiceText = document.getElementById('selectedServiceText');
+            
+            const detailCard = document.getElementById('serviceDetailCard');
+            const detailServiceName = document.getElementById('detailServiceName');
+            const detailServiceId = document.getElementById('detailServiceId');
+            const descriptionText = document.getElementById('descriptionText');
+            const minOrderSpan = document.getElementById('minOrder');
+            const maxOrderSpan = document.getElementById('maxOrder');
+            const quantityInput = document.getElementById('quantityInput');
+            const totalPriceDiv = document.getElementById('totalPrice');
+            const orderBox = document.getElementById('orderBox');
 
-    const detailCard = document.getElementById('serviceDetailCard');
-    const detailServiceName = document.getElementById('detailServiceName');
-    const detailServiceId = document.getElementById('detailServiceId');
-    const descriptionText = document.getElementById('descriptionText');
-    const minOrderSpan = document.getElementById('minOrder');
-    const maxOrderSpan = document.getElementById('maxOrder');
-    const quantityInput = document.getElementById('quantityInput');
-    const totalPriceDiv = document.getElementById('totalPrice');
-    const orderBox = document.getElementById('orderBox');
+            const linkInput = document.getElementById('linkInput');
+            const addLinkBtn = document.getElementById('addLinkBtn');
+            const purchaseBtn = document.getElementById('purchaseBtn');
+            const WHATSAPP_NUMBER = "91963605648";
 
-    const linkInput = document.getElementById('linkInput');
-    const addLinkBtn = document.getElementById('addLinkBtn');
-    const purchaseBtn = document.getElementById('purchaseBtn');
-
-    const WHATSAPP_NUMBER = "91963605648";
-
-    function hideAllMenus() {
-        categoryMenu.classList.remove('show');
-        serviceMenu.classList.remove('show');
-    }
-
-    document.addEventListener('click', () => hideAllMenus());
-
-    function populateCategoryMenu() {
-        categoryMenu.innerHTML = '';
-
-        if (categoriesList.length === 0) {
-            categoryMenu.innerHTML = '<div class="dropdown-item">No categories available</div>';
-            return;
-        }
-
-        categoriesList.forEach(cat => {
-            const item = document.createElement('div');
-            item.className = 'dropdown-item';
-            item.innerHTML = `<span>${cat}</span>`;
-            item.onclick = () => {
-                selectedCategoryText.innerText = cat;
-                loadServicesForCategory(cat);
-                hideAllMenus();
-            };
-            categoryMenu.appendChild(item);
-        });
-    }
-
-    function loadServicesForCategory(category) {
-        const services = groupedServices[category] || [];
-        serviceTrigger.classList.remove('disabled');
-        selectedServiceText.innerText = 'SELECT SERVICE';
-        detailCard.classList.add('hidden');
-        orderBox.classList.add('hidden');
-        selectedServiceData = null;
-
-        serviceMenu.innerHTML = '';
-
-        services.forEach(service => {
-
-            const originalRate = parseFloat(service.rate) || 0;
-            const finalRate = (originalRate * 1.45).toFixed(2);
-
-            const item = document.createElement('div');
-            item.className = 'dropdown-item';
-            item.innerHTML = `
-                <span>#${service.service}</span>
-                <span>${service.name}</span>
-                <span>₹ ${finalRate}</span>
-            `;
-
-            item.onclick = () => {
-                selectedServiceData = service;
-                selectedServiceText.innerText = `#${service.service}`;
-                displayServiceDetails(service);
-                hideAllMenus();
-            };
-
-            serviceMenu.appendChild(item);
-        });
-    }
-
-    function displayServiceDetails(service) {
-        detailServiceName.textContent = service.name || 'Service';
-        detailServiceId.textContent = `ID ${service.service}`;
-        descriptionText.textContent = service.description || 'No description provided.';
-        minOrderSpan.textContent = service.min || '0';
-        maxOrderSpan.textContent = service.max || '0';
-
-        detailCard.classList.remove('hidden');
-        orderBox.classList.remove('hidden');
-        quantityInput.value = '';
-        totalPriceDiv.innerHTML = '₹ 0.00<small>total</small>';
-        linkInput.value = '';
-    }
-
-    quantityInput.addEventListener('input', function() {
-
-        if (!selectedServiceData) return;
-
-        const qty = parseInt(this.value);
-        if (!qty || qty <= 0) {
-            totalPriceDiv.innerHTML = '₹ 0.00<small>total</small>';
-            return;
-        }
-
-        const rate = parseFloat(selectedServiceData.rate) * 1.45;
-        const total = (rate / 1000) * qty;
-
-        totalPriceDiv.innerHTML = `₹ ${total.toFixed(2)}<small>total</small>`;
-    });
-
-    purchaseBtn.addEventListener('click', function() {
-
-        if (!selectedServiceData) {
-            alert('Select a service first');
-            return;
-        }
-
-        const qty = parseInt(quantityInput.value);
-        const link = linkInput.value.trim();
-
-        if (!qty || qty <= 0) {
-            alert('Enter valid quantity');
-            return;
-        }
-
-        if (!link) {
-            alert('Enter link');
-            return;
-        }
-
-        const price = (parseFloat(selectedServiceData.rate) * 1.45 / 1000 * qty).toFixed(2);
-
-        const message =
-            `New Order:%0A` +
-            `Service ID: ${selectedServiceData.service}%0A` +
-            `Service: ${selectedServiceData.name}%0A` +
-            `Quantity: ${qty}%0A` +
-            `Link: ${link}%0A` +
-            `Price: ₹ ${price}`;
-
-        window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, '_blank');
-    });
-
-    // ✅ Fetch from Vercel API
-    async function fetchServices() {
-        try {
-            const response = await fetch(PROXY_URL);
-            const services = await response.json();
-
-            if (!Array.isArray(services)) {
-                console.error("Invalid response format");
-                return;
+            // Helper: hide all open dropdowns
+            function hideAllMenus() {
+                categoryMenu.classList.remove('show');
+                serviceMenu.classList.remove('show');
             }
 
-            services.forEach(service => {
-                const cat = service.category || "Uncategorized";
-                if (!groupedServices[cat]) groupedServices[cat] = [];
-                groupedServices[cat].push(service);
+            // Click outside closes menus
+            document.addEventListener('click', () => hideAllMenus());
+
+            // Category trigger: populate and toggle
+            categoryTrigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isShow = categoryMenu.classList.contains('show');
+                hideAllMenus();
+                if (!isShow) {
+                    populateCategoryMenu();
+                    categoryMenu.classList.add('show');
+                }
             });
 
-            categoriesList = Object.keys(groupedServices);
-            populateCategoryMenu();
+            // Service trigger: only if not disabled
+            serviceTrigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (serviceTrigger.classList.contains('disabled')) return;
+                const isShow = serviceMenu.classList.contains('show');
+                hideAllMenus();
+                if (!isShow) {
+                    serviceMenu.classList.add('show');
+                }
+            });
 
-        } catch (err) {
-            console.error("Failed to load services:", err);
-        }
-    }
+            // Build category menu with "Instagram" first, then alphabetically
+            function populateCategoryMenu() {
+                categoryMenu.innerHTML = '';
+                if (categoriesList.length === 0) {
+                    categoryMenu.innerHTML = '<div class="dropdown-item">no categories available</div>';
+                    return;
+                }
 
-    fetchServices();
-    serviceTrigger.classList.add('disabled');
+                // Sort: Instagram first, then alphabetically
+                const sorted = [...categoriesList].sort((a, b) => {
+                    const aLower = a.toLowerCase();
+                    const bLower = b.toLowerCase();
+                    const insta = 'instagram';
+                    if (aLower.includes(insta) && !bLower.includes(insta)) return -1;
+                    if (!aLower.includes(insta) && bLower.includes(insta)) return 1;
+                    return a.localeCompare(b);
+                });
 
-})();
+                sorted.forEach(cat => {
+                    const item = document.createElement('div');
+                    item.className = 'dropdown-item';
+                    item.innerHTML = `<i class="fas fa-folder" style="color:#aaa;"></i> <span>${cat}</span>`;
+                    item.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        selectedCategoryText.innerText = cat;
+                        hideAllMenus();
+                        loadServicesForCategory(cat);
+                    });
+                    categoryMenu.appendChild(item);
+                });
+            }
+
+            // Load services for selected category and build service menu
+            function loadServicesForCategory(category) {
+                const services = groupedServices[category] || [];
+                serviceTrigger.classList.remove('disabled');
+                selectedServiceText.innerText = 'SELECT SERVICE';
+                detailCard.classList.add('hidden');
+                orderBox.classList.add('hidden');
+                selectedServiceData = null;
+
+                serviceMenu.innerHTML = '';
+                if (services.length === 0) {
+                    serviceMenu.innerHTML = '<div class="dropdown-item">no services</div>';
+                    return;
+                }
+
+                services.forEach(service => {
+                    const originalRate = parseFloat(service.rate) || 0;
+                    const finalRate = (originalRate * 1.45).toFixed(2);
+
+                    const item = document.createElement('div');
+                    item.className = 'dropdown-item';
+
+                    // ID span (reddish)
+                    const idSpan = document.createElement('span');
+                    idSpan.className = 'service-id-custom';
+                    idSpan.textContent = `#${service.service}`;
+
+                    // Name span (two lines allowed)
+                    const nameSpan = document.createElement('span');
+                    nameSpan.className = 'service-name-custom';
+                    nameSpan.textContent = service.name || 'Unnamed';
+
+                    // Price span (greenish)
+                    const priceSpan = document.createElement('span');
+                    priceSpan.className = 'service-price-custom';
+                    priceSpan.textContent = `₹ ${finalRate}`;
+
+                    item.appendChild(idSpan);
+                    item.appendChild(nameSpan);
+                    item.appendChild(priceSpan);
+
+                    item.dataset.service = JSON.stringify(service);
+
+                    item.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        selectedServiceData = service;
+                        selectedServiceText.innerText = `#${service.service} ${service.name?.substring(0,20)}...`;
+                        hideAllMenus();
+                        displayServiceDetails(service);
+                    });
+
+                    serviceMenu.appendChild(item);
+                });
+            }
+
+            // Show service detail card and order panel
+            function displayServiceDetails(service) {
+                detailServiceName.textContent = service.name || 'Service';
+                detailServiceId.textContent = `ID ${service.service}`;
+                descriptionText.textContent = service.description || 'No description provided.';
+                minOrderSpan.textContent = service.min || '0';
+                maxOrderSpan.textContent = service.max || '0';
+
+                detailCard.classList.remove('hidden');
+                orderBox.classList.remove('hidden');
+                quantityInput.value = '';
+                totalPriceDiv.innerHTML = '₹ 0.00<small>total</small>';
+                linkInput.value = '';
+            }
+
+            // Calculate total when quantity changes
+            quantityInput.addEventListener('input', function() {
+                if (!selectedServiceData) {
+                    totalPriceDiv.innerHTML = '₹ 0.00<small>total</small>';
+                    return;
+                }
+                const qty = parseInt(this.value, 10);
+                if (!qty || qty < 0) {
+                    totalPriceDiv.innerHTML = '₹ 0.00<small>total</small>';
+                    return;
+                }
+                const originalRate = parseFloat(selectedServiceData.rate) || 0;
+                const finalRate = originalRate * 1.45;
+                const total = (finalRate / 1000) * qty;
+                totalPriceDiv.innerHTML = `₹ ${total.toFixed(2)}<small>total</small>`;
+            });
+
+            // Add Link button: simple confirmation
+            addLinkBtn.addEventListener('click', function() {
+                if (linkInput.value.trim() !== '') {
+                    alert('✅ Link added: ' + linkInput.value);
+                } else {
+                    alert('⚠️ Please paste a link first.');
+                }
+            });
+
+            // Purchase button: open WhatsApp with order details
+            purchaseBtn.addEventListener('click', function() {
+                if (!selectedServiceData) {
+                    alert('Please select a service first.');
+                    return;
+                }
+                const qty = parseInt(quantityInput.value, 10);
+                if (!qty || qty <= 0) {
+                    alert('Enter a valid quantity.');
+                    return;
+                }
+                const link = linkInput.value.trim();
+                if (!link) {
+                    alert('Please enter a profile or post link.');
+                    return;
+                }
+
+                const serviceId = selectedServiceData.service;
+                const serviceName = selectedServiceData.name || 'Unnamed';
+                const price = (parseFloat(selectedServiceData.rate) * 1.45 / 1000 * qty).toFixed(2);
+                const message = `New order:%0A🔹 Service ID: ${serviceId}%0A🔹 Service: ${serviceName}%0A🔹 Quantity: ${qty}%0A🔹 Link: ${link}%0A🔹 Price: ₹ ${price}`;
+                
+                window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, '_blank');
+            });
+
+            // Fetch services from Vercel API endpoint (no dummy data)
+            async function fetchServices() {
+                try {
+                    const response = await fetch(API_URL);
+                    const services = await response.json();
+                    if (!Array.isArray(services)) {
+                        console.warn("API did not return an array.");
+                        return;
+                    }
+
+                    services.forEach(service => {
+                        const cat = service.category || "Uncategorized";
+                        if (!groupedServices[cat]) groupedServices[cat] = [];
+                        groupedServices[cat].push(service);
+                    });
+
+                    categoriesList = Object.keys(groupedServices).sort();
+                    populateCategoryMenu();
+                } catch (err) {
+                    console.error("Fetch from Vercel API failed.", err);
+                }
+            }
+
+            fetchServices();
+            serviceTrigger.classList.add('disabled');
+        })();
     </script>
-    </body>
-    </html>
+</body>
+</html>
