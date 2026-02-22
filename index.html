@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Second Spot</title>
+    <title>Second Spot · priority: offers > followers > likes</title>
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Modern clean fonts (Inter / Outfit) -->
@@ -789,7 +789,7 @@
                 // Twitter variations
                 'twitter', '𝐓𝐰𝐢𝐭𝐭𝐞𝐫', 'x (twitter)', 'x twitter', 'x.com', 'tweet',
                 // TikTok variations
-                'tiktok', '𝐓𝐢𝐤𝐨𝐤', 'tik tok', 'tick tock', 'tiktok', '𝐓𝐢𝐤𝐓𝐨𝐤', '𝐓𝐢𝐤𝐭𝐨𝐤',
+                'tiktok', '𝐓𝐢𝐤𝐨𝐤', 'tik tok', 'tick tock', 'tiktok',
                 // Facebook variations
                 'facebook', '𝐅𝐚𝐜𝐞𝐛𝐨𝐨𝐤', 'fb', 'meta', 'face book', 'fb.'
             ];
@@ -882,37 +882,36 @@
                 });
             }
 
-            // Custom priority order function
+            // NEW PRIORITY ORDER: Offers (1), Followers (2), Likes (3), then others
             function getServicePriority(serviceName) {
                 const name = serviceName?.toLowerCase() || '';
                 
-                // Priority 1: Instagram Followers (exact match with special chars)
-                if (name.includes('instagram followers') || 
-                    name.includes('𝐢𝐧𝐬𝐭𝐚𝐠𝐫𝐚𝐦 𝐟𝐨𝐥𝐥𝐨𝐰𝐞𝐫𝐬') ||
-                    (name.includes('instagram') && name.includes('followers'))) {
+                // Priority 1: Offers (including special characters)
+                if (name.includes('offer') || 
+                    name.includes('𝐎𝐟𝐟𝐞𝐫𝐬') ||
+                    name.includes('offers') || 
+                    name.includes('special') ||
+                    name.includes('deal') ||
+                    name.includes('package')) {
                     return 1;
                 }
                 
-                // Priority 2: Instagram Likes
-                if (name.includes('instagram likes') || 
-                    name.includes('𝐢𝐧𝐬𝐭𝐚𝐠𝐫𝐚𝐦 𝐥𝐢𝐤𝐞𝐬') ||
-                    (name.includes('instagram') && name.includes('likes'))) {
+                // Priority 2: Followers (including special characters)
+                if (name.includes('follower') || 
+                    name.includes('𝐅𝐨𝐥𝐥𝐨𝐰𝐞𝐫𝐬') ||
+                    name.includes('followers') || 
+                    name.includes('subscribers') ||
+                    name.includes('fans')) {
                     return 2;
                 }
                 
-                // Priority 3: Instagram Reels
-                if (name.includes('instagram reels') || 
-                    name.includes('𝐢𝐧𝐬𝐭𝐚𝐠𝐫𝐚𝐦 𝐫𝐞𝐞𝐥𝐬') ||
-                    (name.includes('instagram') && name.includes('reels'))) {
+                // Priority 3: Likes (including special characters)
+                if (name.includes('like') || 
+                    name.includes('𝐋𝐢𝐤𝐞𝐬') ||
+                    name.includes('likes') || 
+                    name.includes('heart') ||
+                    name.includes('favorite')) {
                     return 3;
-                }
-                
-                // Priority 4: IG Reels Views [Cheap]
-                if (name.includes('ig reels views') || 
-                    name.includes('𝗶𝗴 𝗿𝗲𝗲𝗹𝘀 𝘃𝗶𝗲𝘄𝘀') ||
-                    name.includes('ig reels') || 
-                    (name.includes('reels') && name.includes('views') && name.includes('cheap'))) {
-                    return 4;
                 }
                 
                 // Default priority for other services
