@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Second Spot · sorted & searchable</title>
+    <title>Second Spot · custom priority order</title>
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Modern clean fonts (Inter / Outfit) -->
@@ -696,7 +696,44 @@
                 });
             }
 
-            // Load services for category, sorted by rate (low to high)
+            // Custom priority order function
+            function getServicePriority(serviceName) {
+                const name = serviceName?.toLowerCase() || '';
+                
+                // Priority 1: Instagram Followers (exact match with special chars)
+                if (name.includes('instagram followers') || 
+                    name.includes('𝐢𝐧𝐬𝐭𝐚𝐠𝐫𝐚𝐦 𝐟𝐨𝐥𝐥𝐨𝐰𝐞𝐫𝐬') ||
+                    (name.includes('instagram') && name.includes('followers'))) {
+                    return 1;
+                }
+                
+                // Priority 2: Instagram Likes
+                if (name.includes('instagram likes') || 
+                    name.includes('𝐢𝐧𝐬𝐭𝐚𝐠𝐫𝐚𝐦 𝐥𝐢𝐤𝐞𝐬') ||
+                    (name.includes('instagram') && name.includes('likes'))) {
+                    return 2;
+                }
+                
+                // Priority 3: Instagram Reels
+                if (name.includes('instagram reels') || 
+                    name.includes('𝐢𝐧𝐬𝐭𝐚𝐠𝐫𝐚𝐦 𝐫𝐞𝐞𝐥𝐬') ||
+                    (name.includes('instagram') && name.includes('reels'))) {
+                    return 3;
+                }
+                
+                // Priority 4: IG Reels Views [Cheap]
+                if (name.includes('ig reels views') || 
+                    name.includes('𝗶𝗴 𝗿𝗲𝗲𝗹𝘀 𝘃𝗶𝗲𝘄𝘀') ||
+                    name.includes('ig reels') || 
+                    (name.includes('reels') && name.includes('views') && name.includes('cheap'))) {
+                    return 4;
+                }
+                
+                // Default priority for other services
+                return 999;
+            }
+
+            // Load services for category with custom priority order
             function loadServicesForCategory(category) {
                 const services = groupedServices[category] || [];
                 serviceTrigger.classList.remove('disabled');
@@ -711,8 +748,16 @@
                     return;
                 }
 
-                // Sort services by rate (low to high)
+                // Sort services by custom priority first, then by rate
                 const sortedServices = [...services].sort((a, b) => {
+                    const priorityA = getServicePriority(a.name);
+                    const priorityB = getServicePriority(b.name);
+                    
+                    if (priorityA !== priorityB) {
+                        return priorityA - priorityB;
+                    }
+                    
+                    // If same priority, sort by rate (low to high)
                     const rateA = parseFloat(a.rate) || 0;
                     const rateB = parseFloat(b.rate) || 0;
                     return rateA - rateB;
@@ -761,10 +806,9 @@
                 });
             }
 
-            // Search functionality
+            // Search functionality with same priority order
             function performSearch(searchTerm) {
                 if (!searchTerm || searchTerm.trim() === '') {
-                    // If search is empty, just show the category selection
                     serviceTrigger.classList.add('disabled');
                     selectedServiceText.innerText = 'select category first';
                     detailCard.classList.add('hidden');
@@ -790,8 +834,15 @@
                     return;
                 }
 
-                // Sort filtered services by rate (low to high)
+                // Sort filtered services by custom priority first, then by rate
                 const sortedFiltered = [...filteredServices].sort((a, b) => {
+                    const priorityA = getServicePriority(a.name);
+                    const priorityB = getServicePriority(b.name);
+                    
+                    if (priorityA !== priorityB) {
+                        return priorityA - priorityB;
+                    }
+                    
                     const rateA = parseFloat(a.rate) || 0;
                     const rateB = parseFloat(b.rate) || 0;
                     return rateA - rateB;
