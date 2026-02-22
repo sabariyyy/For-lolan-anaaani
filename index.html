@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Second Spot · vercel api</title>
+    <title>Second Spot · uniform text size</title>
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Modern clean fonts (Inter / Outfit) -->
@@ -180,19 +180,21 @@
             color: #ffffff;
         }
 
-        /* service ID (reddish) & price (greenish) */
+        /* service ID (reddish) — same font size as name */
         .service-id-custom {
             color: #ff8a9f;
             font-weight: 500;
             background: #221c1e;
             padding: 3px 10px;
             border-radius: 30px;
-            font-size: 0.8rem;
+            font-size: 0.9rem;          /* MATCHES DROPDOWN TEXT SIZE */
             border: 1px solid #332a2c;
             white-space: nowrap;
             flex-shrink: 0;
+            line-height: 1.3;
         }
 
+        /* service price (greenish) — same font size as name */
         .service-price-custom {
             color: #9ed9b5;
             font-weight: 500;
@@ -200,10 +202,11 @@
             padding: 3px 10px;
             border-radius: 30px;
             margin-left: auto;
-            font-size: 0.8rem;
+            font-size: 0.9rem;          /* MATCHES DROPDOWN TEXT SIZE */
             border: 1px solid #2a352e;
             white-space: nowrap;
             flex-shrink: 0;
+            line-height: 1.3;
         }
 
         .service-name-custom {
@@ -217,6 +220,7 @@
             line-clamp: 2;
             word-break: break-word;
             max-width: 100%;
+            font-size: 0.9rem;          /* explicit to match */
         }
 
         /* category name inside dropdown also two lines */
@@ -227,6 +231,7 @@
             -webkit-box-orient: vertical;
             line-clamp: 2;
             word-break: break-word;
+            font-size: 0.9rem;
         }
 
         /* detail card */
@@ -553,7 +558,7 @@
 
     <script>
         (function() {
-            // ✅ Vercel API endpoint – change if your deployment uses a different path
+            // ✅ Vercel API endpoint – adjust if needed
             const API_URL = "/api/services";
 
             let groupedServices = {};
@@ -581,18 +586,15 @@
             const linkInput = document.getElementById('linkInput');
             const addLinkBtn = document.getElementById('addLinkBtn');
             const purchaseBtn = document.getElementById('purchaseBtn');
-            const WHATSAPP_NUMBER = "91963605648";
+            const WHATSAPP_NUMBER = "919633605648";
 
-            // Helper: hide all open dropdowns
             function hideAllMenus() {
                 categoryMenu.classList.remove('show');
                 serviceMenu.classList.remove('show');
             }
 
-            // Click outside closes menus
             document.addEventListener('click', () => hideAllMenus());
 
-            // Category trigger: populate and toggle
             categoryTrigger.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const isShow = categoryMenu.classList.contains('show');
@@ -603,7 +605,6 @@
                 }
             });
 
-            // Service trigger: only if not disabled
             serviceTrigger.addEventListener('click', (e) => {
                 e.stopPropagation();
                 if (serviceTrigger.classList.contains('disabled')) return;
@@ -614,7 +615,7 @@
                 }
             });
 
-            // Build category menu with "Instagram" first, then alphabetically
+            // Build category menu (Instagram first)
             function populateCategoryMenu() {
                 categoryMenu.innerHTML = '';
                 if (categoriesList.length === 0) {
@@ -622,7 +623,6 @@
                     return;
                 }
 
-                // Sort: Instagram first, then alphabetically
                 const sorted = [...categoriesList].sort((a, b) => {
                     const aLower = a.toLowerCase();
                     const bLower = b.toLowerCase();
@@ -646,7 +646,6 @@
                 });
             }
 
-            // Load services for selected category and build service menu
             function loadServicesForCategory(category) {
                 const services = groupedServices[category] || [];
                 serviceTrigger.classList.remove('disabled');
@@ -668,7 +667,7 @@
                     const item = document.createElement('div');
                     item.className = 'dropdown-item';
 
-                    // ID span (reddish)
+                    // ID span (reddish) — font size matches rest (0.9rem)
                     const idSpan = document.createElement('span');
                     idSpan.className = 'service-id-custom';
                     idSpan.textContent = `#${service.service}`;
@@ -678,7 +677,7 @@
                     nameSpan.className = 'service-name-custom';
                     nameSpan.textContent = service.name || 'Unnamed';
 
-                    // Price span (greenish)
+                    // Price span (greenish) — same font size
                     const priceSpan = document.createElement('span');
                     priceSpan.className = 'service-price-custom';
                     priceSpan.textContent = `₹ ${finalRate}`;
@@ -701,7 +700,6 @@
                 });
             }
 
-            // Show service detail card and order panel
             function displayServiceDetails(service) {
                 detailServiceName.textContent = service.name || 'Service';
                 detailServiceId.textContent = `ID ${service.service}`;
@@ -716,7 +714,6 @@
                 linkInput.value = '';
             }
 
-            // Calculate total when quantity changes
             quantityInput.addEventListener('input', function() {
                 if (!selectedServiceData) {
                     totalPriceDiv.innerHTML = '₹ 0.00<small>total</small>';
@@ -733,7 +730,6 @@
                 totalPriceDiv.innerHTML = `₹ ${total.toFixed(2)}<small>total</small>`;
             });
 
-            // Add Link button: simple confirmation
             addLinkBtn.addEventListener('click', function() {
                 if (linkInput.value.trim() !== '') {
                     alert('✅ Link added: ' + linkInput.value);
@@ -742,7 +738,6 @@
                 }
             });
 
-            // Purchase button: open WhatsApp with order details
             purchaseBtn.addEventListener('click', function() {
                 if (!selectedServiceData) {
                     alert('Please select a service first.');
@@ -767,7 +762,7 @@
                 window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, '_blank');
             });
 
-            // Fetch services from Vercel API endpoint (no dummy data)
+            // Fetch services from Vercel API
             async function fetchServices() {
                 try {
                     const response = await fetch(API_URL);
@@ -795,4 +790,4 @@
         })();
     </script>
 </body>
-</html>
+    </html>
