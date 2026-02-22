@@ -3,12 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Second Spot</title>
+    <title>Second Spot · Cheapest SMM Panel</title>
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Modern clean fonts (Inter / Outfit) -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpeg" href="https://i.ibb.co/gbm5NDDN/Picsart-26-01-27-23-09-49-465.jpg">
     <style>
+        /* CSS - Separated from HTML */
         * {
             margin: 0;
             padding: 0;
@@ -28,36 +31,36 @@
             position: relative;
         }
 
-        /* site name top left */
-        .site-name {
+        /* site name top left - now with logo image */
+        .site-logo {
             position: fixed;
-            top: 24px;
+            top: 20px;
             left: 28px;
-            font-family: 'Outfit', sans-serif;
-            font-size: 2rem;
-            font-weight: 500;
-            letter-spacing: -0.3px;
-            color: #ffffff;
-            display: flex;
-            align-items: center;
-            gap: 8px;
             z-index: 100;
-            text-shadow: 0 0 1px rgba(255,255,255,0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
         }
 
-        .site-name i {
-            font-size: 1.8rem;
-            color: #cccccc;
-            background: rgba(255,255,255,0.02);
-            padding: 6px 10px;
-            border-radius: 30px;
-            border: 1px solid rgba(255,255,255,0.08);
+        .logo-image {
+            height: 50px;
+            width: auto;
+            display: block;
+        }
+
+        .logo-tagline {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 300;
+            color: #aaaaaa;
+            margin-top: 4px;
+            letter-spacing: 0.5px;
         }
 
         .content {
             width: 100%;
             max-width: 800px;
-            margin-top: 80px;
+            margin-top: 100px; /* Increased to accommodate logo */
             display: flex;
             flex-direction: column;
             gap: 1.2rem;
@@ -626,8 +629,10 @@
     </style>
 </head>
 <body>
-    <div class="site-name">
-        <i class="fas fa-circle"></i> SECOND SPOT
+    <!-- Logo instead of site name -->
+    <div class="site-logo">
+        <img class="logo-image" src="https://i.ibb.co/XxPr8d3P/b1eec33c726a60554bc78518d5f9b32c.png" alt="Second Spot Logo">
+        <div class="logo-tagline">Cheapest SMM Panel</div>
     </div>
 
     <div class="content">
@@ -744,6 +749,7 @@
     </div>
 
     <script>
+        // JavaScript - Separated from HTML
         (function() {
             // Vercel API endpoint
             const API_URL = "/api/services";
@@ -782,13 +788,13 @@
             // Store all services for searching (after filtering)
             let allServices = [];
 
-            // Categories to filter out - now including TikTok
+            // Categories to filter out - including TikTok
             const excludedCategoryKeywords = [
                 // Telegram variations
                 'telegram', '𝐓𝐞𝐥𝐞𝐠𝐫𝐚𝐦', 'teligram', 'tele gram', 'telegram',
                 // Twitter variations
                 'twitter', '𝐓𝐰𝐢𝐭𝐭𝐞𝐫', 'x (twitter)', 'x twitter', 'x.com', 'tweet',
-                // TikTok variations (added)
+                // TikTok variations
                 'tiktok', '𝐓𝐢𝐤𝐭𝐨𝐤', 'tik tok', 'tick tock', 'tiktok', '𝐓𝐢𝐤𝐓𝐨𝐤', 'private',
                 // Facebook variations
                 'facebook', '𝐅𝐚𝐜𝐞𝐛𝐨𝐨𝐤', 'fb', 'meta', 'face book', 'fb.'
@@ -836,7 +842,7 @@
                 });
             }
 
-            // NEW: Get category priority (1 = Offers, 2 = Followers, 3 = Likes, 999 = others)
+            // Get category priority (1 = Offers, 2 = Followers, 3 = Likes, 999 = others)
             function getCategoryPriority(categoryName) {
                 if (!categoryName) return 999;
                 const lowerName = categoryName.toLowerCase();
