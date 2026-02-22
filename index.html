@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Second Spot · two-line names</title>
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Modern clean fonts (Inter / Outfit) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000000;
+            background: #0a0a0a;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 2rem 1.5rem;
+            font-family: 'Inter', sans-serif;
+            position: relative;
+        }
+
+        /* site name top left */
+        .site-name {
+            position: fixed;
+            top: 24px;
+            left: 28px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            font-weight: 500;
+            letter-spacing: -0.3px;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 100;
+            text-shadow: 0 0 1px rgba(255,255,255,0.3);
+        }
+
+        .site-name i {
+            font-size: 1.8rem;
+            color: #cccccc;
+            background: rgba(255,255,255,0.02);
+            padding: 6px 10px;
+            border-radius: 30px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .content {
+            width: 100%;
+            max-width: 800px;
+            margin-top: 80px;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        /* dropdowns - clean black */
+        .dropdown-container {
+            position: relative;
+            margin-bottom: 0.5rem;
+            width: 100%;
+        }
+
+        .dropdown-container label {
+            display: block;
+            font-size: 0.7rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            color: #aaaaaa;
+            margin-left: 8px;
+        }
+
+        .custom-dropdown-trigger {
+            width: 100%;
+            background: #111111;
+            border: 1px solid #2a2a2a;
+            border-radius: 20px;
+            padding: 16px 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
+
+        .custom-dropdown-trigger:hover {
+            border-color: #444444;
+            background: #1a1a1a;
+        }
+
+        .trigger-text {
+            font-weight: 400;
+            font-size: 1rem;
+            color: #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            max-width: calc(100% - 40px);
+        }
+
+        .trigger-text span {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            line-clamp: 2;
+            max-width: 100%;
+            word-break: break-word;
+        }
+
+        .trigger-text i {
+            color: #888888;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .trigger-arrow {
+            color: #888888;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .custom-dropdown-menu {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            right: 0;
+            background: #111111;
+            border: 1px solid #2a2a2a;
+            border-radius: 20px;
+            padding: 0.4rem 0;
+            max-height: 340px;
+            overflow-y: auto;
+            z-index: 50;
+            box-shadow: 0 20px 30px -12px #000000;
+            display: none;
+            opacity: 0;
+            transform: translateY(-8px);
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+
+        .custom-dropdown-menu.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            padding: 12px 22px;
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: #dddddd;
+            border-bottom: 1px solid #222222;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: 0.1s;
+            cursor: pointer;
+        }
+
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-item:hover {
+            background: #1f1f1f;
+            color: #ffffff;
+        }
+
+        /* service ID (reddish) & price (greenish) */
+        .service-id-custom {
+            color: #ff8a9f;
+            font-weight: 500;
+            background: #221c1e;
+            padding: 3px 10px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            border: 1px solid #332a2c;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .service-price-custom {
+            color: #9ed9b5;
+            font-weight: 500;
+            background: #1c231f;
+            padding: 3px 10px;
+            border-radius: 30px;
+            margin-left: auto;
+            font-size: 0.8rem;
+            border: 1px solid #2a352e;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .service-name-custom {
+            flex: 1;
+            font-weight: 400;
+            color: #f0f0f0;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            line-clamp: 2;
+            word-break: break-word;
+            max-width: 100%;
+        }
+
+        /* category name inside dropdown also two lines */
+        .dropdown-item span:not(.service-id-custom):not(.service-price-custom) {
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            line-clamp: 2;
+            word-break: break-word;
+        }
+
+        /* detail card */
+        .service-detail-card {
+            background: #0f0f0f;
+            border-radius: 28px;
+            padding: 1.5rem 2rem;
+            margin: 1rem 0 1rem;
+            border: 1px solid #2a2a2a;
+            box-shadow: 0 12px 24px -16px #000000;
+            animation: fadeSlide 0.25s ease;
+            width: 100%;
+        }
+
+        @keyframes fadeSlide {
+            0% { opacity: 0; transform: translateY(8px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .service-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            margin-bottom: 1rem;
+        }
+
+        .service-name-large {
+            font-weight: 500;
+            font-size: 1.4rem;
+            color: #ffffff;
+            letter-spacing: -0.2px;
+            font-family: 'Outfit', sans-serif;
+            word-break: break-word;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            line-clamp: 2;
+            max-width: 70%;
+        }
+
+        .service-id-large {
+            font-size: 0.8rem;
+            background: #1c1c1c;
+            padding: 0.3rem 1.3rem;
+            border-radius: 40px;
+            font-weight: 400;
+            color: #bbbbbb;
+            border: 1px solid #333333;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .service-description {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #bbbbbb;
+            margin: 1rem 0 1.2rem;
+            background: #0a0a0a;
+            padding: 1.2rem 1.5rem;
+            border-radius: 24px;
+            border-left: 2px solid #444444;
+            font-weight: 300;
+        }
+
+        .minmax-row {
+            display: flex;
+            gap: 2rem;
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: #cccccc;
+        }
+
+        .minmax-row span {
+            background: #0c0c0c;
+            padding: 0.4rem 1.5rem;
+            border-radius: 40px;
+            border: 1px solid #2a2a2a;
+        }
+
+        /* order panel */
+        .order-panel {
+            background: #0f0f0f;
+            border-radius: 28px;
+            padding: 1.8rem 2rem;
+            border: 1px solid #2a2a2a;
+            box-shadow: 0 12px 24px -16px #000000;
+            animation: fadeSlide 0.25s 0.05s both;
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+
+        .quantity-area {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.4rem;
+        }
+
+        .quantity-input-wrapper {
+            flex: 3;
+            min-width: 240px;
+            position: relative;
+        }
+
+        .quantity-input-wrapper i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #777777;
+            font-size: 1rem;
+        }
+
+        .quantity-input-wrapper input {
+            width: 100%;
+            padding: 16px 24px 16px 52px;
+            background: #0a0a0a;
+            border: 1px solid #333333;
+            border-radius: 40px;
+            font-size: 1rem;
+            font-weight: 400;
+            outline: none;
+            transition: 0.15s;
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .quantity-input-wrapper input:focus {
+            border-color: #555555;
+            background: #101010;
+        }
+
+        .price-tag {
+            flex: 1;
+            min-width: 130px;
+            background: #0a0a0a;
+            color: #dddddd;
+            border-radius: 60px;
+            padding: 12px 16px;
+            text-align: center;
+            font-weight: 500;
+            font-size: 1.5rem;
+            letter-spacing: -0.2px;
+            border: 1px solid #333333;
+            white-space: nowrap;
+        }
+
+        .price-tag small {
+            font-size: 0.6rem;
+            font-weight: 300;
+            opacity: 0.6;
+            display: block;
+            color: #aaaaaa;
+        }
+
+        .action-row {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 0.8rem;
+        }
+
+        .link-input-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .link-input-wrapper i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #777777;
+            font-size: 1rem;
+        }
+
+        .link-input-wrapper input {
+            width: 100%;
+            padding: 16px 24px 16px 52px;
+            background: #0a0a0a;
+            border: 1px solid #333333;
+            border-radius: 40px;
+            font-size: 0.95rem;
+            font-weight: 400;
+            outline: none;
+            color: #ffffff;
+        }
+
+        .link-input-wrapper input:focus {
+            border-color: #555555;
+            background: #101010;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: #1a1a1a;
+            border: 1px solid #3a3a3a;
+            color: #f0f0f0;
+            padding: 12px 24px;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: 0.15s;
+            flex: 1 1 auto;
+            justify-content: center;
+        }
+
+        .btn:hover {
+            background: #252525;
+            border-color: #555555;
+        }
+
+        .btn-primary {
+            background: #1e2a2a;
+            border-color: #3d5a5a;
+            color: #ccf0f0;
+        }
+
+        .btn-primary:hover {
+            background: #254040;
+            border-color: #5a8080;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        ::placeholder {
+            color: #444444;
+            font-weight: 300;
+        }
+
+        .custom-dropdown-menu::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-dropdown-menu::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+        .custom-dropdown-menu::-webkit-scrollbar-thumb {
+            background: #444444;
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="site-name">
+        <i class="fas fa-circle"></i> SECOND SPOT
+    </div>
+
+    <div class="content">
+        <!-- Category dropdown -->
+        <div class="dropdown-container" id="categoryDropdownContainer">
+            <label><i class="fas fa-tag"></i> CATEGORY</label>
+            <div class="custom-dropdown-trigger" id="categoryTrigger">
+                <span class="trigger-text"><i class="fas fa-folder"></i> <span id="selectedCategoryText">SELECT CATEGORY</span></span>
+                <span class="trigger-arrow"><i class="fas fa-chevron-down"></i></span>
+            </div>
+            <div class="custom-dropdown-menu" id="categoryMenu"></div>
+        </div>
+
+        <!-- Service dropdown -->
+        <div class="dropdown-container" id="serviceDropdownContainer">
+            <label><i class="fas fa-cube"></i> SERVICE</label>
+            <div class="custom-dropdown-trigger" id="serviceTrigger">
+                <span class="trigger-text"><i class="fas fa-star"></i> <span id="selectedServiceText">select category first</span></span>
+                <span class="trigger-arrow"><i class="fas fa-chevron-down"></i></span>
+            </div>
+            <div class="custom-dropdown-menu" id="serviceMenu"></div>
+        </div>
+
+        <!-- service detail card -->
+        <div id="serviceDetailCard" class="service-detail-card hidden">
+            <div class="service-header">
+                <span class="service-name-large" id="detailServiceName">—</span>
+                <span class="service-id-large" id="detailServiceId">ID —</span>
+            </div>
+            <div class="service-description" id="detailDescription">
+                <span id="descriptionText"></span>
+            </div>
+            <div class="minmax-row">
+                <span><i class="fas fa-arrow-down"></i> MIN <strong id="minOrder">0</strong></span>
+                <span><i class="fas fa-arrow-up"></i> MAX <strong id="maxOrder">0</strong></span>
+            </div>
+        </div>
+
+        <!-- order panel with link + quality + purchase button -->
+        <div id="orderBox" class="order-panel hidden">
+            <div class="quantity-area">
+                <div class="quantity-input-wrapper">
+                    <i class="fas fa-hashtag"></i>
+                    <input type="number" id="quantityInput" min="1" placeholder="quantity (e.g. 1000)">
+                </div>
+                <div class="price-tag" id="totalPrice">
+                    ₹ 0.00
+                    <small>total</small>
+                </div>
+            </div>
+
+            <div class="action-row">
+                <div class="link-input-wrapper">
+                    <i class="fas fa-link"></i>
+                    <input type="url" id="linkInput" placeholder="enter your profile / post link">
+                </div>
+                <div class="button-group">
+                    <button class="btn" id="addLinkBtn"><i class="fas fa-check-circle"></i> Add Link</button>
+                    <button class="btn btn-primary" id="purchaseBtn"><i class="fab fa-whatsapp"></i> Purchase</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const API_KEY = "8ff2e98cd22e9906a5f7d597f814a8475bdab586";
+            const API_URL = "https://themainsmmprovider.com/api/v2";
+            const WHATSAPP_NUMBER = "91963605648";  // without '+'
+
+            let groupedServices = {};
+            let selectedServiceData = null;
+            let categoriesList = [];
+
+            // DOM elements
+            const categoryTrigger = document.getElementById('categoryTrigger');
+            const categoryMenu = document.getElementById('categoryMenu');
+            const selectedCategoryText = document.getElementById('selectedCategoryText');
+            const serviceTrigger = document.getElementById('serviceTrigger');
+            const serviceMenu = document.getElementById('serviceMenu');
+            const selectedServiceText = document.getElementById('selectedServiceText');
+            
+            const detailCard = document.getElementById('serviceDetailCard');
+            const detailServiceName = document.getElementById('detailServiceName');
+            const detailServiceId = document.getElementById('detailServiceId');
+            const descriptionText = document.getElementById('descriptionText');
+            const minOrderSpan = document.getElementById('minOrder');
+            const maxOrderSpan = document.getElementById('maxOrder');
+            const quantityInput = document.getElementById('quantityInput');
+            const totalPriceDiv = document.getElementById('totalPrice');
+            const orderBox = document.getElementById('orderBox');
+
+            const linkInput = document.getElementById('linkInput');
+            const addLinkBtn = document.getElementById('addLinkBtn');
+            const purchaseBtn = document.getElementById('purchaseBtn');
+
+            function hideAllMenus() {
+                categoryMenu.classList.remove('show');
+                serviceMenu.classList.remove('show');
+            }
+
+            categoryTrigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isShow = categoryMenu.classList.contains('show');
+                hideAllMenus();
+                if (!isShow) {
+                    populateCategoryMenu();
+                    categoryMenu.classList.add('show');
+                }
+            });
+
+            serviceTrigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (serviceTrigger.classList.contains('disabled')) return;
+                const isShow = serviceMenu.classList.contains('show');
+                hideAllMenus();
+                if (!isShow) {
+                    serviceMenu.classList.add('show');
+                }
+            });
+
+            document.addEventListener('click', () => hideAllMenus());
+
+            // Populate categories: Instagram first, then alphabetically
+            function populateCategoryMenu() {
+                categoryMenu.innerHTML = '';
+                if (categoriesList.length === 0) {
+                    categoryMenu.innerHTML = '<div class="dropdown-item">no categories available</div>';
+                    return;
+                }
+
+                // Instagram first sorting
+                const sorted = [...categoriesList].sort((a, b) => {
+                    const aLower = a.toLowerCase();
+                    const bLower = b.toLowerCase();
+                    const insta = 'instagram';
+                    if (aLower.includes(insta) && !bLower.includes(insta)) return -1;
+                    if (!aLower.includes(insta) && bLower.includes(insta)) return 1;
+                    return a.localeCompare(b);
+                });
+
+                sorted.forEach(cat => {
+                    const item = document.createElement('div');
+                    item.className = 'dropdown-item';
+                    // wrap category name in a span to apply 2-line clamp
+                    item.innerHTML = `<i class="fas fa-folder" style="color:#aaa;"></i> <span>${cat}</span>`;
+                    item.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        selectedCategoryText.innerText = cat;
+                        hideAllMenus();
+                        loadServicesForCategory(cat);
+                    });
+                    categoryMenu.appendChild(item);
+                });
+            }
+
+            function loadServicesForCategory(category) {
+                const services = groupedServices[category] || [];
+                serviceTrigger.classList.remove('disabled');
+                selectedServiceText.innerText = 'SELECT SERVICE';
+                detailCard.classList.add('hidden');
+                orderBox.classList.add('hidden');
+                selectedServiceData = null;
+
+                serviceMenu.innerHTML = '';
+                if (services.length === 0) {
+                    serviceMenu.innerHTML = '<div class="dropdown-item">no services</div>';
+                    return;
+                }
+
+                services.forEach(service => {
+                    const originalRate = parseFloat(service.rate) || 0;
+                    const finalRate = (originalRate * 1.45).toFixed(2);
+
+                    const item = document.createElement('div');
+                    item.className = 'dropdown-item';
+
+                    const idSpan = document.createElement('span');
+                    idSpan.className = 'service-id-custom';
+                    idSpan.textContent = `#${service.service}`;
+                    
+                    const nameSpan = document.createElement('span');
+                    nameSpan.className = 'service-name-custom';
+                    nameSpan.textContent = service.name || 'Unnamed';
+                    
+                    const priceSpan = document.createElement('span');
+                    priceSpan.className = 'service-price-custom';
+                    priceSpan.textContent = `₹ ${finalRate}`;
+
+                    item.appendChild(idSpan);
+                    item.appendChild(nameSpan);
+                    item.appendChild(priceSpan);
+
+                    item.dataset.service = JSON.stringify(service);
+
+                    item.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        selectedServiceData = service;
+                        // show first 20 chars in trigger but full name stored
+                        selectedServiceText.innerText = `#${service.service} ${service.name?.substring(0,20)}...`;
+                        hideAllMenus();
+                        displayServiceDetails(service);
+                    });
+
+                    serviceMenu.appendChild(item);
+                });
+            }
+
+            function displayServiceDetails(service) {
+                detailServiceName.textContent = service.name || 'Service';
+                detailServiceId.textContent = `ID ${service.service}`;
+                descriptionText.textContent = service.description || 'No description provided.';
+                minOrderSpan.textContent = service.min || '0';
+                maxOrderSpan.textContent = service.max || '0';
+
+                detailCard.classList.remove('hidden');
+                orderBox.classList.remove('hidden');
+                quantityInput.value = '';
+                totalPriceDiv.innerHTML = '₹ 0.00<small>total</small>';
+                linkInput.value = '';
+            }
+
+            quantityInput.addEventListener('input', function() {
+                if (!selectedServiceData) {
+                    totalPriceDiv.innerHTML = '₹ 0.00<small>total</small>';
+                    return;
+                }
+                const qty = parseInt(this.value, 10);
+                if (!qty || qty < 0) {
+                    totalPriceDiv.innerHTML = '₹ 0.00<small>total</small>';
+                    return;
+                }
+                const originalRate = parseFloat(selectedServiceData.rate) || 0;
+                const finalRate = originalRate * 1.45;
+                const total = (finalRate / 1000) * qty;
+                totalPriceDiv.innerHTML = `₹ ${total.toFixed(2)}<small>total</small>`;
+            });
+
+            addLinkBtn.addEventListener('click', function() {
+                if (linkInput.value.trim() !== '') {
+                    alert('✅ Link added: ' + linkInput.value);
+                } else {
+                    alert('⚠️ Please paste a link first.');
+                }
+            });
+
+            purchaseBtn.addEventListener('click', function() {
+                if (!selectedServiceData) {
+                    alert('Please select a service first.');
+                    return;
+                }
+                const qty = parseInt(quantityInput.value, 10);
+                if (!qty || qty <= 0) {
+                    alert('Enter a valid quantity.');
+                    return;
+                }
+                const link = linkInput.value.trim();
+                if (!link) {
+                    alert('Please enter a profile or post link.');
+                    return;
+                }
+
+                const serviceId = selectedServiceData.service;
+                const serviceName = selectedServiceData.name || 'Unnamed';
+                const price = (parseFloat(selectedServiceData.rate) * 1.45 / 1000 * qty).toFixed(2);
+                const message = `New order:%0A🔹 Service ID: ${serviceId}%0A🔹 Service: ${serviceName}%0A🔹 Quantity: ${qty}%0A🔹 Link: ${link}%0A🔹 Price: ₹ ${price}`;
+                
+                window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, '_blank');
+            });
+
+            // REAL API CALL – no dummy data
+            async function fetchServices() {
+                try {
+                    const response = await fetch(API_URL, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                        body: `key=${API_KEY}&action=services`
+                    });
+                    const services = await response.json();
+                    if (!Array.isArray(services)) {
+                        console.warn("API did not return array.");
+                        return;
+                    }
+
+                    services.forEach(service => {
+                        const cat = service.category || "Uncategorized";
+                        if (!groupedServices[cat]) groupedServices[cat] = [];
+                        groupedServices[cat].push(service);
+                    });
+
+                    categoriesList = Object.keys(groupedServices).sort();
+                    populateCategoryMenu();
+                } catch (err) {
+                    console.error("API fetch failed. No dummy data.", err);
+                }
+            }
+
+            fetchServices();
+            serviceTrigger.classList.add('disabled');
+        })();
+    </script>
+</body>
+</html>
