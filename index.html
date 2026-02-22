@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Second Spot · priority: offers > followers > likes</title>
+    <title>Second Spot · category priority: offers > followers > likes</title>
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Modern clean fonts (Inter / Outfit) -->
@@ -782,14 +782,14 @@
             // Store all services for searching (after filtering)
             let allServices = [];
 
-            // Categories to filter out - comprehensive list including all variations
+            // Categories to filter out - now including TikTok
             const excludedCategoryKeywords = [
                 // Telegram variations
                 'telegram', '𝐓𝐞𝐥𝐞𝐠𝐫𝐚𝐦', 'teligram', 'tele gram', 'telegram',
                 // Twitter variations
                 'twitter', '𝐓𝐰𝐢𝐭𝐭𝐞𝐫', 'x (twitter)', 'x twitter', 'x.com', 'tweet',
-                // TikTok variations
-                'tiktok', '𝐓𝐢𝐤𝐨𝐤', 'tik tok', 'tick tock', 'tiktok',
+                // TikTok variations (added)
+                'tiktok', '𝐓𝐢𝐤𝐓𝐨𝐤', 'tik tok', 'tick tock', 'tiktok', '𝐓𝐢𝐤𝐓𝐨𝐤',
                 // Facebook variations
                 'facebook', '𝐅𝐚𝐜𝐞𝐛𝐨𝐨𝐤', 'fb', 'meta', 'face book', 'fb.'
             ];
@@ -821,7 +821,7 @@
                 }
             });
 
-            // Check if category should be excluded - more aggressive filtering
+            // Check if category should be excluded
             function isCategoryExcluded(categoryName) {
                 if (!categoryName) return false;
                 const lowerName = categoryName.toLowerCase();
@@ -836,7 +836,43 @@
                 });
             }
 
-            // Build category menu with Instagram variants on top, excluding specified categories
+            // NEW: Get category priority (1 = Offers, 2 = Followers, 3 = Likes, 999 = others)
+            function getCategoryPriority(categoryName) {
+                if (!categoryName) return 999;
+                const lowerName = categoryName.toLowerCase();
+                
+                // Priority 1: Offers (including special characters)
+                if (lowerName.includes('offer') || 
+                    categoryName.includes('𝐎𝐟𝐟𝐞𝐫𝐬') ||
+                    lowerName.includes('offers') || 
+                    lowerName.includes('deal') ||
+                    lowerName.includes('package') ||
+                    lowerName.includes('special')) {
+                    return 1;
+                }
+                
+                // Priority 2: Followers (including special characters)
+                if (lowerName.includes('follower') || 
+                    categoryName.includes('𝐅𝐨𝐥𝐥𝐨𝐰𝐞𝐫𝐬') ||
+                    lowerName.includes('followers') || 
+                    lowerName.includes('subscriber') ||
+                    lowerName.includes('fans')) {
+                    return 2;
+                }
+                
+                // Priority 3: Likes (including special characters)
+                if (lowerName.includes('like') || 
+                    categoryName.includes('𝐋𝐢𝐤𝐞𝐬') ||
+                    lowerName.includes('likes') || 
+                    lowerName.includes('heart') ||
+                    lowerName.includes('favorite')) {
+                    return 3;
+                }
+                
+                return 999;
+            }
+
+            // Build category menu with priority order: Offers > Followers > Likes > others
             function populateCategoryMenu() {
                 categoryMenu.innerHTML = '';
                 
@@ -848,23 +884,14 @@
                     return;
                 }
 
-                // Comprehensive Instagram detection (including special characters)
-                const instagramVariants = ['instagram', '𝐈𝐧𝐬𝐭𝐚𝐠𝐫𝐚𝐦', 'insta', '📷', '📸'];
-                
+                // Sort categories by priority, then alphabetically
                 const sorted = [...filteredCategories].sort((a, b) => {
-                    const aLower = a.toLowerCase();
-                    const bLower = b.toLowerCase();
+                    const priorityA = getCategoryPriority(a);
+                    const priorityB = getCategoryPriority(b);
                     
-                    // Check if a contains any Instagram variant
-                    const aIsInsta = instagramVariants.some(variant => 
-                        aLower.includes(variant.toLowerCase()) || a.includes(variant)
-                    );
-                    const bIsInsta = instagramVariants.some(variant => 
-                        bLower.includes(variant.toLowerCase()) || b.includes(variant)
-                    );
-                    
-                    if (aIsInsta && !bIsInsta) return -1;
-                    if (!aIsInsta && bIsInsta) return 1;
+                    if (priorityA !== priorityB) {
+                        return priorityA - priorityB;
+                    }
                     return a.localeCompare(b);
                 });
 
@@ -882,39 +909,25 @@
                 });
             }
 
-            // NEW PRIORITY ORDER: Offers (1), Followers (2), Likes (3), then others
+            // Service priority function (for internal sorting within a category)
             function getServicePriority(serviceName) {
                 const name = serviceName?.toLowerCase() || '';
                 
-                // Priority 1: Offers (including special characters)
-                if (name.includes('offer') || 
-                    name.includes('𝐎𝐟𝐟𝐞𝐫𝐬') ||
-                    name.includes('offers') || 
-                    name.includes('special') ||
-                    name.includes('deal') ||
-                    name.includes('package')) {
+                // Priority 1: Offers
+                if (name.includes('offer') || name.includes('offers') || name.includes('special') || name.includes('deal') || name.includes('package')) {
                     return 1;
                 }
                 
-                // Priority 2: Followers (including special characters)
-                if (name.includes('follower') || 
-                    name.includes('𝐅𝐨𝐥𝐥𝐨𝐰𝐞𝐫𝐬') ||
-                    name.includes('followers') || 
-                    name.includes('subscribers') ||
-                    name.includes('fans')) {
+                // Priority 2: Followers
+                if (name.includes('follower') || name.includes('followers') || name.includes('subscriber') || name.includes('fans')) {
                     return 2;
                 }
                 
-                // Priority 3: Likes (including special characters)
-                if (name.includes('like') || 
-                    name.includes('𝐋𝐢𝐤𝐞𝐬') ||
-                    name.includes('likes') || 
-                    name.includes('heart') ||
-                    name.includes('favorite')) {
+                // Priority 3: Likes
+                if (name.includes('like') || name.includes('likes') || name.includes('heart') || name.includes('favorite')) {
                     return 3;
                 }
                 
-                // Default priority for other services
                 return 999;
             }
 
@@ -1192,7 +1205,7 @@
                     // Get unique categories from filtered services
                     categoriesList = Object.keys(groupedServices).sort();
                     
-                    // Populate the category menu
+                    // Populate the category menu (with priority sorting)
                     populateCategoryMenu();
                     
                     console.log(`Filtered out ${services.length - filteredServices.length} services from excluded categories`);
