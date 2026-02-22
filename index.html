@@ -757,7 +757,7 @@
                 const serviceId = selectedServiceData.service;
                 const serviceName = selectedServiceData.name || 'Unnamed';
                 const price = (parseFloat(selectedServiceData.rate) * 1.45 / 1000 * qty).toFixed(2);
-                const message = `New order:%0A🔹 Service ID: ${serviceId}%0A🔹 Service: ${serviceName}%0A🔹 Quantity: ${qty}%0A🔹 Link: ${link}%0A🔹 Price: ₹ ${price}`;
+                const message = `New order:%0A🔹 Service ID: ${serviceId}%0A🔹 Quantity: ${qty}%0A🔹 Link: ${link}%0A🔹 Price: ₹ ${price}`;
                 
                 window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, '_blank');
             });
