@@ -1,9 +1,9 @@
 {
   "version": 2,
   "routes": [
-    { "src": "/api/services", "dest": "/api/services.js" },
-    { "src": "/api/refill", "dest": "/api/refill.js" },
-    { "src": "/api/order-status", "dest": "/api/order-status.js" },
+    { "src": "/api/services", "dest": "api/services.js" },
+    { "src": "/api/refill", "dest": "api/refill.js" },
+    { "src": "/api/order-status", "dest": "api/order-status.js" },
     { "src": "/(.*)", "dest": "/$1" }
   ]
 }
