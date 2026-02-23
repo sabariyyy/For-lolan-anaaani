@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Second Spot · Order Status</title>
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Modern clean fonts (Inter / Outfit) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpeg" href="https://i.ibb.co/gbm5NDDN/Picsart-26-01-27-23-09-49-465.jpg">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000000;
+            background: #0a0a0a;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 2rem 1.5rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* site logo top left */
+        .site-logo {
+            position: fixed;
+            top: 20px;
+            left: 28px;
+            z-index: 100;
+        }
+
+        .logo-image {
+            height: 50px;
+            width: auto;
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 700px;
+            margin-top: 100px;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-header h1 {
+            font-size: 2.2rem;
+            font-weight: 600;
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, #ffffff, #b0b0ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-header p {
+            color: #aaaaaa;
+            font-size: 0.9rem;
+        }
+
+        /* Order ID input section */
+        .input-card {
+            background: #0f0f0f;
+            border: 1px solid #2a2a2a;
+            border-radius: 30px;
+            padding: 1.8rem 2rem;
+            box-shadow: 0 12px 24px -16px #000000;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            color: #aaaaaa;
+        }
+
+        .input-wrapper {
+            position: relative;
+            width: 100%;
+            margin-bottom: 1.2rem;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #777777;
+            font-size: 1rem;
+        }
+
+        #orderIdInput {
+            width: 100%;
+            padding: 16px 24px 16px 52px;
+            background: #0a0a0a;
+            border: 1px solid #333333;
+            border-radius: 40px;
+            font-size: 1rem;
+            font-weight: 400;
+            outline: none;
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+        }
+
+        #orderIdInput:focus {
+            border-color: #555555;
+            background: #101010;
+        }
+
+        .check-btn {
+            width: 100%;
+            background: #1e2a2a;
+            border: 1px solid #3d5a5a;
+            color: #ccf0f0;
+            padding: 16px;
+            border-radius: 40px;
+            font-size: 1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+
+        .check-btn:hover {
+            background: #254040;
+            border-color: #5a8080;
+        }
+
+        .check-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Error message */
+        .error-message {
+            color: #ff8a9f;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            text-align: center;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        /* Status card - hidden by default */
+        .status-card {
+            background: #0f0f0f;
+            border: 1px solid #2a2a2a;
+            border-radius: 30px;
+            padding: 2rem;
+            box-shadow: 0 12px 24px -16px #000000;
+            display: none;
+        }
+
+        .status-card.show {
+            display: block;
+            animation: fadeSlide 0.3s ease;
+        }
+
+        @keyframes fadeSlide {
+            0% { opacity: 0; transform: translateY(10px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Circular progress */
+        .progress-circle-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 1rem 0 2rem 0;
+        }
+
+        .progress-circle {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: #0a0a0a;
+            border: 8px solid #2a2a2a;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            box-shadow: 0 0 30px rgba(158, 217, 181, 0.2);
+        }
+
+        .progress-circle::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            right: -8px;
+            bottom: -8px;
+            border-radius: 50%;
+            background: conic-gradient(#9ed9b5 0deg, #2a2a2a 0deg);
+            mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #000 calc(100% - 8px));
+            -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #000 calc(100% - 8px));
+            transition: background 0.3s ease;
+        }
+
+        .progress-circle span {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #9ed9b5;
+            z-index: 2;
+        }
+
+        .progress-circle small {
+            font-size: 0.9rem;
+            color: #aaaaaa;
+            z-index: 2;
+        }
+
+        /* Status info grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.2rem;
+            margin-top: 2rem;
+        }
+
+        .info-item {
+            background: #0a0a0a;
+            border: 1px solid #2a2a2a;
+            border-radius: 24px;
+            padding: 1rem 1.2rem;
+        }
+
+        .info-item.full-width {
+            grid-column: span 2;
+        }
+
+        .info-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #888888;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .info-label i {
+            color: #9ed9b5;
+            font-size: 0.8rem;
+        }
+
+        .info-value {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #ffffff;
+            word-break: break-word;
+        }
+
+        .info-value.small {
+            font-size: 0.9rem;
+            color: #cccccc;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            background: #1a1a1a;
+            border: 1px solid;
+        }
+
+        .status-badge.completed {
+            background: #1a2a1a;
+            color: #9ed9b5;
+            border-color: #3d5a3d;
+        }
+
+        .status-badge.processing {
+            background: #2a2a1a;
+            color: #d9d59e;
+            border-color: #5a5a3d;
+        }
+
+        .status-badge.pending {
+            background: #2a1a1a;
+            color: #d99e9e;
+            border-color: #5a3d3d;
+        }
+
+        .status-badge.partial {
+            background: #1a2a2a;
+            color: #9ed9d9;
+            border-color: #3d5a5a;
+        }
+
+        /* Loading spinner */
+        .loading-spinner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid #2a2a2a;
+            border-top: 3px solid #9ed9b5;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: #9ed9b5;
+            font-size: 0.9rem;
+        }
+
+        .loading-dots:after {
+            content: '.';
+            animation: dots 1.5s steps(5, end) infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60% { content: '...'; }
+            80%, 100% { content: ''; }
+        }
+
+        /* Back button */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #aaaaaa;
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            transition: 0.15s;
+        }
+
+        .back-btn:hover {
+            color: #ffffff;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="site-logo">
+        <img class="logo-image" src="https://i.ibb.co/XxPr8d3P/b1eec33c726a60554bc78518d5f9b32c.png" alt="Second Spot Logo">
+    </div>
+
+    <div class="main-container">
+        <!-- Header with back link -->
+        <a href="/" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Back to Order
+        </a>
+
+        <div class="page-header">
+            <h1>Order Status</h1>
+            <p>Track your order progress in real-time</p>
+        </div>
+
+        <!-- Order ID Input Card -->
+        <div class="input-card">
+            <label class="input-label"><i class="fas fa-hashtag"></i> ENTER ORDER ID</label>
+            <div class="input-wrapper">
+                <i class="fas fa-search"></i>
+                <input type="text" id="orderIdInput" placeholder="e.g. 123456" inputmode="numeric">
+            </div>
+            <button class="check-btn" id="checkStatusBtn">
+                <i class="fas fa-sync-alt"></i> Check Status
+            </button>
+            <div class="error-message" id="errorMessage"></div>
+        </div>
+
+        <!-- Status Card (hidden initially) -->
+        <div class="status-card" id="statusCard">
+            <!-- Loading state inside card -->
+            <div id="loadingContainer" class="loading-spinner">
+                <div class="spinner"></div>
+                <div class="loading-text">Fetching status<span class="loading-dots"></span></div>
+            </div>
+
+            <!-- Content container (hidden initially) -->
+            <div id="statusContent" style="display: none;">
+                <!-- Circular Progress -->
+                <div class="progress-circle-container">
+                    <div class="progress-circle" id="progressCircle">
+                        <span id="progressPercent">0%</span>
+                        <small>completed</small>
+                    </div>
+                </div>
+
+                <!-- Info Grid -->
+                <div class="info-grid">
+                    <div class="info-item full-width">
+                        <div class="info-label"><i class="fas fa-link"></i> LINK</div>
+                        <div class="info-value small" id="orderLink">-</div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-label"><i class="fas fa-play"></i> START COUNT</div>
+                        <div class="info-value" id="startCount">0</div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-label"><i class="fas fa-hourglass-half"></i> REMAINING</div>
+                        <div class="info-value" id="remainingCount">0</div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-label"><i class="fas fa-info-circle"></i> STATUS</div>
+                        <div class="info-value" id="orderStatusBadge">
+                            <span class="status-badge" id="statusBadge">-</span>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-label"><i class="fas fa-clock"></i> ORDERED TIME</div>
+                        <div class="info-value small" id="orderTime">-</div>
+                    </div>
+
+                    <div class="info-item full-width">
+                        <div class="info-label"><i class="fas fa-calendar-alt"></i> ORDERED DATE</div>
+                        <div class="info-value small" id="orderDate">-</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const orderIdInput = document.getElementById('orderIdInput');
+            const checkBtn = document.getElementById('checkStatusBtn');
+            const errorMsg = document.getElementById('errorMessage');
+            const statusCard = document.getElementById('statusCard');
+            const loadingContainer = document.getElementById('loadingContainer');
+            const statusContent = document.getElementById('statusContent');
+            
+            // Elements to populate
+            const progressPercent = document.getElementById('progressPercent');
+            const progressCircle = document.getElementById('progressCircle');
+            const orderLink = document.getElementById('orderLink');
+            const startCount = document.getElementById('startCount');
+            const remainingCount = document.getElementById('remainingCount');
+            const statusBadge = document.getElementById('statusBadge');
+            const orderTime = document.getElementById('orderTime');
+            const orderDate = document.getElementById('orderDate');
+
+            // API endpoint
+            const STATUS_API_URL = '/api/order-status';
+
+            // Helper to format date/time
+            function formatDateTime(timestamp) {
+                if (!timestamp) return '-';
+                const date = new Date(timestamp);
+                if (isNaN(date.getTime())) return '-';
+                
+                const timeStr = date.toLocaleTimeString('en-IN', { 
+                    hour: '2-digit', 
+                    minute: '2-digit',
+                    hour12: true 
+                });
+                const dateStr = date.toLocaleDateString('en-IN', { 
+                    day: '2-digit', 
+                    month: 'short', 
+                    year: 'numeric' 
+                });
+                return { time: timeStr, date: dateStr };
+            }
+
+            // Update progress circle
+            function updateProgress(percent) {
+                const roundedPercent = Math.min(100, Math.max(0, Math.round(percent)));
+                progressPercent.textContent = roundedPercent + '%';
+                
+                // Calculate degrees for conic gradient
+                const degrees = (roundedPercent / 100) * 360;
+                progressCircle.style.setProperty('--progress-deg', degrees + 'deg');
+                
+                // Apply conic gradient via pseudo-element
+                const style = progressCircle.style;
+                style.setProperty('background', `conic-gradient(#9ed9b5 ${degrees}deg, #2a2a2a ${degrees}deg)`);
+            }
+
+            // Update status badge
+            function updateStatusBadge(status) {
+                statusBadge.textContent = status || 'Unknown';
+                statusBadge.className = 'status-badge';
+                
+                if (!status) return;
+                
+                const lower = status.toLowerCase();
+                if (lower.includes('complete')) {
+                    statusBadge.classList.add('completed');
+                } else if (lower.includes('process') || lower.includes('progress')) {
+                    statusBadge.classList.add('processing');
+                } else if (lower.includes('pending')) {
+                    statusBadge.classList.add('pending');
+                } else if (lower.includes('partial')) {
+                    statusBadge.classList.add('partial');
+                } else {
+                    statusBadge.classList.add('pending');
+                }
+            }
+
+            // Show error
+            function showError(message) {
+                errorMsg.textContent = message;
+                errorMsg.classList.add('show');
+                statusCard.classList.remove('show');
+            }
+
+            // Clear error
+            function clearError() {
+                errorMsg.classList.remove('show');
+                errorMsg.textContent = '';
+            }
+
+            // Reset to loading state
+            function showLoading() {
+                loadingContainer.style.display = 'flex';
+                statusContent.style.display = 'none';
+                statusCard.classList.add('show');
+                clearError();
+            }
+
+            // Show content with data
+            function showContent(data) {
+                loadingContainer.style.display = 'none';
+                statusContent.style.display = 'block';
+                
+                // Calculate progress percentage
+                const start = parseInt(data.start_count) || 0;
+                const remains = parseInt(data.remains) || 0;
+                const total = start + remains;
+                let percent = 0;
+                if (total > 0) {
+                    percent = (start / total) * 100;
+                } else if (data.status?.toLowerCase().includes('complete')) {
+                    percent = 100;
+                }
+                
+                updateProgress(percent);
+                
+                // Set values
+                orderLink.textContent = data.link || '-';
+                startCount.textContent = start;
+                remainingCount.textContent = remains;
+                updateStatusBadge(data.status);
+                
+                // Handle time and date
+                if (data.date) {
+                    const formatted = formatDateTime(data.date);
+                    orderTime.textContent = formatted.time;
+                    orderDate.textContent = formatted.date;
+                } else {
+                    orderTime.textContent = '-';
+                    orderDate.textContent = '-';
+                }
+            }
+
+            // Fetch order status
+            async function fetchOrderStatus(orderId) {
+                showLoading();
+                
+                try {
+                    const response = await fetch(STATUS_API_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ order_id: orderId })
+                    });
+
+                    const result = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(result.error || 'Failed to fetch status');
+                    }
+
+                    if (!result.success || !result.data) {
+                        throw new Error('Invalid response from server');
+                    }
+
+                    // Check if order exists (API might return error structure)
+                    if (result.data.error) {
+                        throw new Error(result.data.error);
+                    }
+
+                    showContent(result.data);
+
+                } catch (err) {
+                    console.error('Status fetch error:', err);
+                    loadingContainer.style.display = 'none';
+                    statusContent.style.display = 'none';
+                    showError(err.message || 'Could not fetch order status. Please try again.');
+                }
+            }
+
+            // Event listener for check button
+            checkBtn.addEventListener('click', function() {
+                const orderId = orderIdInput.value.trim();
+                
+                if (!orderId) {
+                    showError('Please enter an Order ID');
+                    return;
+                }
+                
+                if (!/^\d+$/.test(orderId)) {
+                    showError('Order ID should contain only numbers');
+                    return;
+                }
+                
+                fetchOrderStatus(orderId);
+            });
+
+            // Allow Enter key
+            orderIdInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    checkBtn.click();
+                }
+            });
+
+            // Clear error when typing
+            orderIdInput.addEventListener('input', function() {
+                clearError();
+            });
+
+            // Pre-fill from URL parameter (optional)
+            const urlParams = new URLSearchParams(window.location.search);
+            const orderParam = urlParams.get('order_id');
+            if (orderParam) {
+                orderIdInput.value = orderParam;
+                // Auto-check after short delay
+                setTimeout(() => checkBtn.click(), 300);
+            }
+        })();
+    </script>
+</body>
+</html>
