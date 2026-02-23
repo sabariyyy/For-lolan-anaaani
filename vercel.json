@@ -1,37 +1,9 @@
 {
-  "functions": {
-    "api/services.js": {
-      "memory": 1024,
-      "maxDuration": 10
-    }
-  },
-  "rewrites": [
-    {
-      "source": "/api/services",
-      "destination": "/api/services.js"
-    }
-  ],
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        },
-        {
-          "key": "X-Frame-Options",
-          "value": "DENY"
-        },
-        {
-          "key": "X-XSS-Protection",
-          "value": "1; mode=block"
-        }
-      ]
-    }
-  ],
-  "buildCommand": null,
-  "outputDirectory": ".",
-  "installCommand": null,
-  "devCommand": null
+  "version": 2,
+  "routes": [
+    { "src": "/api/services", "dest": "/api/services.js" },
+    { "src": "/api/refill", "dest": "/api/refill.js" },
+    { "src": "/api/order-status", "dest": "/api/order-status.js" },
+    { "src": "/(.*)", "dest": "/$1" }
+  ]
 }
