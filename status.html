@@ -424,9 +424,9 @@
                     </div>
                 </div>
 
-                <!-- Info Grid - Shows only data from API response -->
+                <!-- Info Grid - Shows exactly the fields from the structured response -->
                 <div class="info-grid">
-                    <!-- Charge (grid span 2 for emphasis) -->
+                    <!-- Charge -->
                     <div class="info-item full-width">
                         <div class="info-label"><i class="fas fa-credit-card"></i> CHARGE</div>
                         <div class="info-value" id="orderCharge">-</div>
@@ -493,7 +493,7 @@
                 progressCircle.style.setProperty('background', `conic-gradient(#9ed9b5 ${degrees}deg, #2a2a2a ${degrees}deg)`);
             }
 
-            // Update status badge
+            // Update status badge based on status text
             function updateStatusBadge(status) {
                 statusBadge.textContent = status || 'Unknown';
                 statusBadge.className = 'status-badge';
@@ -535,7 +535,7 @@
                 clearError();
             }
 
-            // Show content with data from API
+            // Show content with data from the structured API response
             function showContent(data) {
                 loadingContainer.style.display = 'none';
                 statusContent.style.display = 'block';
@@ -553,15 +553,23 @@
                 
                 updateProgress(percent);
                 
-                // Set values from API response
-                orderCharge.textContent = data.charge ? `${data.charge} ${data.currency || ''}` : '-';
+                // Set values from the data object
+                // Format charge with currency if both exist
+                if (data.charge && data.currency) {
+                    orderCharge.textContent = `${data.charge} ${data.currency}`;
+                } else if (data.charge) {
+                    orderCharge.textContent = data.charge;
+                } else {
+                    orderCharge.textContent = '-';
+                }
+                
                 startCount.textContent = start;
                 remainingCount.textContent = remains;
                 updateStatusBadge(data.status);
                 orderCurrency.textContent = data.currency || '-';
             }
 
-            // Exact fetchOrderStatus function as provided
+            // Exact fetch function as provided, handling the structured response
             async function fetchOrderStatus(orderId) {
                 showLoading();
 
@@ -580,8 +588,11 @@
                     }
 
                     if (!response.ok) throw new Error(result.error || 'Failed to fetch status');
+                    
+                    // Check for the exact structure: { success: true, data: { ... } }
                     if (!result.success || !result.data) throw new Error('Invalid response structure');
 
+                    // Pass the data object to showContent
                     showContent(result.data);
 
                 } catch (err) {
