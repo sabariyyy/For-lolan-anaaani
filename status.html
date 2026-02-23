@@ -73,6 +73,37 @@
             font-size: 0.9rem;
         }
 
+        /* API Info Banner */
+        .api-info {
+            background: #0a0a0a;
+            border: 1px solid #2a2a2a;
+            border-radius: 20px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+            color: #cccccc;
+        }
+
+        .api-info code {
+            background: #1a1a1a;
+            padding: 2px 8px;
+            border-radius: 12px;
+            color: #9ed9b5;
+            font-family: monospace;
+            font-size: 0.85rem;
+        }
+
+        .api-info pre {
+            background: #1a1a1a;
+            padding: 0.8rem;
+            border-radius: 12px;
+            margin-top: 8px;
+            color: #9ed9b5;
+            font-size: 0.8rem;
+            overflow-x: auto;
+            border: 1px solid #333333;
+        }
+
         /* Order ID input section */
         .input-card {
             background: #0f0f0f;
@@ -393,6 +424,31 @@
             <p>Track your order progress in real-time</p>
         </div>
 
+        <!-- API Info Banner - Shows expected request/response format -->
+        <div class="api-info">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                <i class="fas fa-code" style="color: #9ed9b5;"></i>
+                <span style="color: #ffffff;">API Request Format</span>
+            </div>
+            <code>POST /api/order-status</code> with JSON:
+            <pre>{ "order_id": "123456" }</pre>
+            
+            <div style="display: flex; align-items: center; gap: 8px; margin: 12px 0 8px;">
+                <i class="fas fa-code" style="color: #9ed9b5;"></i>
+                <span style="color: #ffffff;">Expected Response</span>
+            </div>
+            <pre>{
+  "success": true,
+  "data": {
+    "charge": "0.27819",
+    "start_count": "3572",
+    "status": "Partial",
+    "remains": "157",
+    "currency": "USD"
+  }
+}</pre>
+        </div>
+
         <!-- Order ID Input Card -->
         <div class="input-card">
             <label class="input-label"><i class="fas fa-hashtag"></i> ENTER ORDER ID</label>
@@ -569,11 +625,12 @@
                 orderCurrency.textContent = data.currency || '-';
             }
 
-            // Exact fetch function as provided, handling the structured response
+            // Fetch function matching the exact API specification
             async function fetchOrderStatus(orderId) {
                 showLoading();
 
                 try {
+                    // Send POST request with JSON body { "order_id": "123456" }
                     const response = await fetch('/api/order-status', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -617,6 +674,7 @@
                     return;
                 }
                 
+                // Call with the order_id as per API spec
                 fetchOrderStatus(orderId);
             });
 
