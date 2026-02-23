@@ -1,4 +1,15 @@
 export default async function handler(req, res) {
+
+    // ✅ CORS headers
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+    // ✅ Handle preflight request
+    if (req.method === "OPTIONS") {
+        return res.status(200).end();
+    }
+
     try {
         const response = await fetch("https://themainsmmprovider.com/api/v2", {
             method: "POST",
@@ -11,11 +22,24 @@ export default async function handler(req, res) {
             })
         });
 
-        const data = await response.json();
+        // Read as text first (prevents JSON crash)
+        const text = await response.text();
 
-        res.status(200).json(data);
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch (err) {
+            console.error("Invalid JSON from provider:", text);
+            return res.status(500).json({
+                error: "Provider returned invalid JSON",
+                raw: text
+            });
+        }
+
+        return res.status(200).json(data);
 
     } catch (error) {
-        res.status(500).json({ error: "Failed to fetch services" });
+        console.error("Server error:", error);
+        return res.status(500).json({ error: "Failed to fetch services" });
     }
 }
