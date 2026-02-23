@@ -1,67 +1,55 @@
-import express from 'express';
-import bodyParser from 'body-parser';
-import fetch from 'node-fetch';
+// server.js
+import fetch from "node-fetch";
 
-const app = express();
-const PORT = process.env.PORT || 3000;
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-
-const API_KEY = "0481cc5255022d113169aba5f21b44e33a8b7cb9";
-const API_URL = "https://themainsmmprovider.com/api/v2";
-
-// Single endpoint to handle both services and order status
-app.post('/server', async (req, res) => {
-  const { action, order_id } = req.body;
-
-  if (!action) {
-    return res.status(400).json({ success: false, error: 'Action is required: "services" or "status"' });
-  }
-
+export default async function handler(req, res) {
   try {
-    const bodyParams = new URLSearchParams({ key: API_KEY, action });
-
-    if (action === "status") {
-      if (!order_id) {
-        return res.status(400).json({ success: false, error: 'Order ID is required for status' });
-      }
-      bodyParams.append("order", order_id);
+    if (req.method !== "POST") {
+      return res.status(405).json({ success: false, error: "Method not allowed" });
     }
 
-    const response = await fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: bodyParams
-    });
+    const { action, order_id } = req.body;
 
-    const text = await response.text();
-    let data;
+    if (!action) {
+      return res.status(400).json({ success: false, error: "Action is required" });
+    }
 
-    try {
-      data = JSON.parse(text);
-    } catch (err) {
-      console.error("Raw provider response:", text);
-      return res.status(502).json({
-        success: false,
-        error: "Invalid JSON from provider",
-        raw: text
+    // SERVICES
+    if (action === "services") {
+      const response = await fetch("https://themainsmmprovider.com/api/v2", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ key: "YOUR_API_KEY", action: "services" })
       });
+      const text = await response.text();
+      let data;
+      try { data = JSON.parse(text); } 
+      catch { return res.status(500).json({ success: false, error: "Invalid JSON from provider", raw: text }); }
+
+      return res.status(200).json({ success: true, data });
     }
 
-    res.status(200).json({ success: true, data });
+    // ORDER STATUS
+    if (action === "status") {
+      if (!order_id) return res.status(400).json({ success: false, error: "Order ID is required" });
+
+      const response = await fetch("https://themainsmmprovider.com/api/v2", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ key: "YOUR_API_KEY", action: "status", order: order_id })
+      });
+
+      const text = await response.text();
+      let data;
+      try { data = JSON.parse(text); } 
+      catch { return res.status(500).json({ success: false, error: "Invalid JSON from provider", raw: text }); }
+
+      return res.status(200).json({ success: true, data });
+    }
+
+    return res.status(400).json({ success: false, error: "Unknown action" });
 
   } catch (err) {
     console.error(err);
-    res.status(500).json({ success: false, error: "Failed to fetch from provider" });
+    return res.status(500).json({ success: false, error: "Internal server error" });
   }
-});
-
-// Default route
-app.get('/', (req, res) => {
-  res.send('Server is running!');
-});
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+}
