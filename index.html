@@ -3,18 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Second Spot · Cheapest SMM Panel</title>
+    <title>Second Spot · with Bottom Nav</title>
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Google Fonts -->
+    <!-- Modern clean fonts (Inter / Outfit) -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Favicon -->
     <link rel="icon" type="image/jpeg" href="https://i.ibb.co/gbm5NDDN/Picsart-26-01-27-23-09-49-465.jpg">
-    <!-- External CSS -->
-    <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Logo instead of site name -->
     <div class="site-logo">
         <img class="logo-image" src="https://i.ibb.co/XxPr8d3P/b1eec33c726a60554bc78518d5f9b32c.png" alt="Second Spot Logo">
     </div>
@@ -61,8 +59,9 @@
             </div>
         </div>
 
-        <!-- order panel -->
+        <!-- order panel with streamlined layout -->
         <div id="orderBox" class="order-panel hidden">
+            <!-- Quantity and Price Row -->
             <div class="quantity-area">
                 <div class="quantity-input-wrapper">
                     <i class="fas fa-hashtag"></i>
@@ -74,26 +73,57 @@
                 </div>
             </div>
 
-            <div class="action-row">
+            <!-- Link Input Row -->
+            <div class="link-row">
+                <label><i class="fas fa-link"></i> PROFILE / POST LINK</label>
                 <div class="link-input-wrapper">
                     <i class="fas fa-link"></i>
-                    <input type="url" id="linkInput" placeholder="enter your profile / post link">
+                    <input type="url" id="linkInput" placeholder="enter your profile or post link">
                 </div>
-                <div class="button-group">
-                    <button class="btn" id="addLinkBtn"><i class="fas fa-check-circle"></i> Add Link</button>
-                    <button class="btn btn-primary" id="purchaseBtn"><i class="fab fa-whatsapp"></i> Purchase</button>
+                <div class="error-message" id="linkError">Please enter a valid URL (e.g., https://instagram.com/username)</div>
+            </div>
+
+            <!-- Continue Button (now generates QR and shows payment section) -->
+            <button class="continue-btn" id="continueBtn">
+                <i class="fas fa-arrow-right"></i> Continue to Payment
+            </button>
+
+            <!-- Payment Section (QR + UTR) - Hidden by default, shown after Continue -->
+            <div class="payment-section" id="paymentSection">
+                <!-- QR Code Display Area - Auto-generated with loading animation -->
+                <div class="qr-display" id="qrDisplay">
+                    <!-- QR code will be injected here automatically -->
                 </div>
+                
+                <div class="utr-input-wrapper">
+                    <i class="fas fa-qrcode"></i>
+                    <input type="text" id="utrInput" placeholder="Enter UTR / Transaction ID">
+                </div>
+                
+                <button class="submit-btn" id="submitUtrBtn">
+                    <i class="fab fa-whatsapp"></i> Submit & Order
+                </button>
             </div>
         </div>
     </div>
 
-    <!-- Disclaimer Section (always visible at bottom) -->
+    <!-- Bottom Navigation Bar -->
+    <div class="bottom-nav">
+        <div class="nav-container">
+            <a href="/refill" class="nav-btn refill">
+                <i class="fas fa-sync-alt"></i> Refill
+            </a>
+            <a href="/status" class="nav-btn status">
+                <i class="fas fa-chart-line"></i> Status
+            </a>
+        </div>
+    </div>
+
+    <!-- Disclaimer Section -->
     <div class="disclaimer-section">
         <div class="disclaimer-title">
             <i class="fas fa-exclamation-triangle"></i> IMPORTANT GUIDELINES
         </div>
-
-        <!-- Instagram Followers Disclaimer -->
         <div class="disclaimer-block">
             <div class="disclaimer-subtitle">
                 <i class="fas fa-users"></i> Before ordering Instagram Followers
@@ -101,21 +131,17 @@
             <div class="disclaimer-note">
                 Make sure your Instagram account is <strong>public</strong> and the <strong>"Flagged for Review"</strong> option is turned off.
             </div>
-            
             <div class="steps">
                 <p><span class="step-number">❗️</span> HOW TO TURN OFF "FLAGGED FOR REVIEW"</p>
                 <p><span class="step-number">1.</span> Go to Instagram Settings</p>
                 <p><span class="step-number">2.</span> Select Invite and Follow Friends</p>
                 <p><span class="step-number">3.</span> Disable Flagged for Review</p>
             </div>
-            
             <ul class="disclaimer-list">
                 <li><i class="fas fa-times-circle warning-icon"></i> No refund after the order is placed</li>
                 <li><i class="fas fa-times-circle warning-icon"></i> No refill if the profile is made private or the username is changed</li>
             </ul>
         </div>
-
-        <!-- Instagram Reel/Post Views/Likes Disclaimer -->
         <div class="disclaimer-block">
             <div class="disclaimer-subtitle">
                 <i class="fas fa-video"></i> Before ordering Instagram Reel/Post views or likes
@@ -131,8 +157,6 @@
             </div>
         </div>
     </div>
-
-    <!-- External JavaScript -->
-    <script src="script.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
