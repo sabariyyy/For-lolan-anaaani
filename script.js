@@ -492,7 +492,7 @@
                 const serviceName = selectedServiceData.name || 'Unnamed';
                 const price = currentPrice.toFixed(2);
                 
-                const message = `New order with UTR:%0A🔹 Service ID: ${serviceId}%0A🔹 Quantity: ${qty}%0A🔹 Link: ${currentLink}%0A🔹 Price: ₹ ${price}%0A🔹 UTR: ${utr}`;
+                const message = `New order request ✋🏻:%0A🔹 Service ID: ${serviceId}%0A🔹 Quantity: ${qty}%0A🔹 Link: ${currentLink}%0A🔹 Price: ₹ ${price}%0A🔹 UTR: ${utr}`;
                 
                 window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, '_blank');
             });
