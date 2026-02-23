@@ -1,0 +1,22 @@
+{
+  "name": "secondspot-api",
+  "version": "1.0.0",
+  "description": "API backend for Second Spot SMM panel",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vercel dev",
+    "start": "vercel dev",
+    "build": "echo \"No build step required\""
+  },
+  "keywords": [
+    "SMM",
+    "API",
+    "Vercel"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "node-fetch": "^3.4.1"
+  },
+  "type": "module"
+}
