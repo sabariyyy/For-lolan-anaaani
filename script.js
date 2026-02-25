@@ -88,8 +88,9 @@
                 const lowerName = categoryName.toLowerCase();
                 
                 if (lowerName.includes('offer') || categoryName.includes('𝐎𝐟𝐟𝐞𝐫𝐬') ||
-                    lowerName.includes('offers') || lowerName.includes('deal') ||
-                    lowerName.includes('package') || lowerName.includes('special')) {
+                    lowerName.includes('offers') || lowerName.includes('𝐈𝐆') ||
+                    lowerName.includes('new') || lowerName.includes('𝐍𝐞𝐰')) ||
+                    lowerName.includes('sale') || lowerName.includes('𝐒𝐚𝐥𝐞')) {
                     return 1;
                 }
                 
