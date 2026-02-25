@@ -111,6 +111,18 @@
                     return 4;
                 }
                 
+                if (lowerName.includes('instagram') || categoryName.includes('𝐈𝐧𝐬𝐭𝐚𝐠𝐫𝐚𝐦') ||
+                    lowerName.includes('instagram') || lowerName.includes('instagram') ||
+                    lowerName.includes('Instagram')) {
+                    return 5;
+                }
+                
+                if (lowerName.includes('YouTube') || categoryName.includes('𝐘𝐨𝐮𝐓𝐮𝐛𝐞') ||
+                    lowerName.includes('youtubs') || lowerName.includes('youtube') ||
+                    lowerName.includes('youtube')) {
+                    return 5;
+                }
+                
                 return 999;
             }
 
