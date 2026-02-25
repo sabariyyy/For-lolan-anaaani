@@ -45,8 +45,7 @@
             const excludedCategoryKeywords = [
                 'telegram', '𝐓𝐞𝐥𝐞𝐠𝐫𝐚𝐦', 'teligram', 'tele gram',
                 'twitter', '𝐓𝐰𝐢𝐭𝐭𝐞𝐫', 'x (twitter)', 'x twitter', 'x.com', 'tweet',
-                'tiktok', '𝐓𝐢𝐤𝐭𝐨𝐤', 'tik tok', 'tick tock', '𝐓𝐢𝐤𝐓𝐨𝐤', 'private',
-                'facebook', '𝐅𝐚𝐜𝐞𝐛𝐨𝐨𝐤', 'fb', 'meta', 'face book', 'fb.'
+                'tiktok', '𝐓𝐢𝐤𝐭𝐨𝐤', 'tik tok', 'tick tock', '𝐓𝐢𝐤𝐓𝐨𝐤', 'private'
             ];
 
             function hideAllMenus() {
