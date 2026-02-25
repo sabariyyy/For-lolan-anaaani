@@ -4,6 +4,10 @@
     {
       "src": "/api/services",
       "dest": "/api/services.js"
+    },
+    {
+      "src": "/api/.*",
+      "dest": "/api/$0"
     }
   ]
 }
