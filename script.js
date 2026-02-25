@@ -87,12 +87,18 @@
                 if (!categoryName) return 999;
                 const lowerName = categoryName.toLowerCase();
                 
-                if (lowerName.includes('offer') || categoryName.includes('𝐎𝐟𝐟𝐞𝐫𝐬') ||
-                    lowerName.includes('offers') || lowerName.includes('𝐈𝐆') ||
-                    lowerName.includes('new') || lowerName.includes('𝐍𝐞𝐰')) ||
-                    lowerName.includes('sale') || lowerName.includes('𝐒𝐚𝐥𝐞')) {
-                    return 1;
-                }
+if (
+    lowerName.includes('offer') ||
+    categoryName.includes('𝐎𝐟𝐟𝐞𝐫𝐬') ||
+    lowerName.includes('offers') ||
+    lowerName.includes('𝐈𝐆') ||
+    lowerName.includes('new') ||
+    lowerName.includes('𝐍𝐞𝐰') ||
+    lowerName.includes('sale') ||
+    lowerName.includes('𝐒𝐚𝐥𝐞')
+) {
+    return 1;
+}
                 
                 if (lowerName.includes('follower') || categoryName.includes('𝐈𝐧𝐬𝐭𝐚𝐠𝐫𝐚𝐦 𝐅𝐨𝐥𝐥𝐨𝐰𝐞𝐫𝐬') ||
                     lowerName.includes('followers') || lowerName.includes('subscriber') ||
@@ -121,7 +127,7 @@
                 if (lowerName.includes('YouTube') || categoryName.includes('𝐘𝐨𝐮𝐓𝐮𝐛𝐞') ||
                     lowerName.includes('youtubs') || lowerName.includes('youtube') ||
                     lowerName.includes('youtube')) {
-                    return 5;
+                    return 6;
                 }
                 
                 return 999;
