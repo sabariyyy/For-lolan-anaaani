@@ -6,10 +6,6 @@
       "dest": "/api/services.js"
     },
     {
-      "src": "/api/services.js",
-      "status": 404
-    },
-    {
       "src": "/script.js",
       "status": 404
     },
