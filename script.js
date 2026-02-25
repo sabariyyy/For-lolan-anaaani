@@ -93,16 +93,22 @@
                     return 1;
                 }
                 
-                if (lowerName.includes('follower') || categoryName.includes('𝐅𝐨𝐥𝐥𝐨𝐰𝐞𝐫𝐬') ||
+                if (lowerName.includes('follower') || categoryName.includes('𝐈𝐧𝐬𝐭𝐚𝐠𝐫𝐚𝐦 𝐅𝐨𝐥𝐥𝐨𝐰𝐞𝐫𝐬') ||
                     lowerName.includes('followers') || lowerName.includes('subscriber') ||
                     lowerName.includes('fans')) {
                     return 2;
                 }
                 
-                if (lowerName.includes('like') || categoryName.includes('𝐋𝐢𝐤𝐞𝐬') ||
+                if (lowerName.includes('like') || categoryName.includes('𝐈𝐧𝐬𝐭𝐚𝐠𝐫𝐚𝐦 𝐋𝐢𝐤𝐞𝐬') ||
                     lowerName.includes('likes') || lowerName.includes('heart') ||
                     lowerName.includes('favorite')) {
                     return 3;
+                }
+                
+                if (lowerName.includes('like') || categoryName.includes('𝐈𝐧𝐬𝐭𝐚𝐠𝐫𝐚𝐦 𝐑𝐞𝐞𝐥') ||
+                    lowerName.includes('likes') || lowerName.includes('𝗜𝗚') ||
+                    lowerName.includes('favorite')) {
+                    return 4;
                 }
                 
                 return 999;
