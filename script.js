@@ -91,9 +91,6 @@ if (
     lowerName.includes('offer') ||
     categoryName.includes('𝐎𝐟𝐟𝐞𝐫𝐬') ||
     lowerName.includes('offers') ||
-    lowerName.includes('𝐈𝐆') ||
-    lowerName.includes('new') ||
-    lowerName.includes('𝐍𝐞𝐰') ||
     lowerName.includes('sale') ||
     lowerName.includes('𝐒𝐚𝐥𝐞')
 ) {
@@ -102,7 +99,7 @@ if (
                 
                 if (lowerName.includes('follower') || categoryName.includes('𝐈𝐧𝐬𝐭𝐚𝐠𝐫𝐚𝐦 𝐅𝐨𝐥𝐥𝐨𝐰𝐞𝐫𝐬') ||
                     lowerName.includes('followers') || lowerName.includes('subscriber') ||
-                    lowerName.includes('fans')) {
+                    lowerName.includes('𝐈𝐆')) {
                     return 2;
                 }
                 
